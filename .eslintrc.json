@@ -1,3 +1,9 @@
+// Hier sind die Regeln für ESLint drin
 {
-  "extends": "next/core-web-vitals"
+	"extends": [
+		"next/core-web-vitals",
+		"standard",
+		"plugin:tailwindcss/recommended",
+		"prettier"
+	]
 }
