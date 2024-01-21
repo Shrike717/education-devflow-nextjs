@@ -3,6 +3,8 @@ import Image from "next/image";
 import Link from "next/link";
 import React from "react";
 import Theme from "./Theme";
+import MobileNav from "./MobileNav";
+import GlobalSearch from "../search/GlobalSearch";
 
 const NavBar = () => {
   return (
@@ -19,7 +21,7 @@ const NavBar = () => {
           <span className="text-primary-500">Dev </span>Flow
         </p>
       </Link>
-      Global Search
+      <GlobalSearch />
       <div className="flex-between gap-5">
         <Theme />
         <SignedIn>
@@ -36,7 +38,7 @@ const NavBar = () => {
           />
         </SignedIn>{" "}
         {/* SignedIn Funkion von Clerk. Nur wenn der User eingeloggt ist, sieht man das darin eingeschlossene. */}
-        MobileNav
+        <MobileNav />
       </div>
     </nav>
   );
