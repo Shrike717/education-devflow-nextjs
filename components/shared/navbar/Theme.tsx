@@ -40,7 +40,7 @@ const Theme = () => {
           )}
         </MenubarTrigger>
         {/* Das ist der Content, der ausgeklappt wird. */}
-        <MenubarContent className="absolute right-[-3rem] mt-3 min-w-[120px] rounded border py-2 dark:border-dark-400 dark:bg-dark-300">
+        <MenubarContent className="background-light900_dark200 absolute right-[-3rem] mt-3 min-w-[120px] rounded border py-2 dark:border-dark-400 dark:bg-dark-300">
           {themes.map((item) => (
             <MenubarItem
               key={item.value}
