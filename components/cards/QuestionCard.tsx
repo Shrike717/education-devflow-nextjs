@@ -57,7 +57,7 @@ const QuestionCard = ({
       </div>
 
       <div className="flex-between mt-6 w-full flex-wrap gap-3">
-        <Metric
+        <Metric // Reusable Component für die kleinen Icons und Texte unten
           imgUrl="/assets/icons/avatar.svg"
           alt="user"
           value={author.name}
