@@ -7,35 +7,35 @@ const RightSidebar = () => {
   // Fake questions
   const hotQuestions = [
     {
-      _id: 1,
+      _id: "1",
       title: "I want to use Next.js for my new project. How can I use it?",
     },
     {
-      _id: 2,
+      _id: "2",
       title: "How can I set up a new Next.js project on my local machine?",
     },
     {
-      _id: 3,
+      _id: "3",
       title:
         "What are the key features of Next.js that make it suitable for my project?",
     },
     {
-      _id: 4,
+      _id: "4",
       title: "How can I create dynamic routes in Next.js?",
     },
     {
-      _id: 5,
+      _id: "5",
       title: "What is the recommended way to fetch data in Next.js?",
     },
   ];
 
   // Fake tags
   const popularTags = [
-    { _id: 1, name: "javascript", totalQuestions: 5 },
-    { _id: 2, name: "react", totalQuestions: 5 },
-    { _id: 3, name: "next", totalQuestions: 5 },
-    { _id: 4, name: "vue", totalQuestions: 2 },
-    { _id: 5, name: "redux", totalQuestions: 10 },
+    { _id: "1", name: "javascript", totalQuestions: 5 },
+    { _id: "2", name: "react", totalQuestions: 5 },
+    { _id: "3", name: "next", totalQuestions: 5 },
+    { _id: "4", name: "vue", totalQuestions: 2 },
+    { _id: "5", name: "redux", totalQuestions: 10 },
   ];
 
   return (
