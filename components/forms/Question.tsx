@@ -1,5 +1,6 @@
 "use client";
 
+import React, { useRef, useState } from "react";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
 import * as z from "zod";
@@ -16,12 +17,17 @@ import {
 import { Input } from "@/components/ui/input";
 import { QuestionsSchema } from "@/lib/validations";
 // Importe für Editor:
-import React, { useRef } from "react";
 import { Editor } from "@tinymce/tinymce-react";
 import { Badge } from "../ui/badge";
 import Image from "next/image";
 
+// Variable, die den Type für den Button setzt:
+const type: any = "create";
+
 const Question = () => {
+  // Wir setzen ein Sicherheitsstate für das Submitten der Daten
+  const [isSubmitting, setIsSubmitting] = useState(false);
+
   // Hier initialisieren wie useRef für den Editor:
   const editorRef = useRef(null); // Damit holen wir uns die Werte, die eingegeben werden
 
@@ -37,9 +43,18 @@ const Question = () => {
 
   // Zod 2. Define a submit handler.
   function onSubmit(values: z.infer<typeof QuestionsSchema>) {
-    // Do something with the form values.
-    // ✅ This will be type-safe and validated.
-    console.log(values);
+    // Wir setzen den Sicherheitsstate auf true. Damit wird verhindert, dass der Button zweimal gedrückt werden kann und Chaos in der Datenbank verursacht
+    setIsSubmitting(true);
+
+    // Hier können wir zwei Dinge tun: eine Frage createn oder editen
+    try {
+      // Mache einen async Call zu unserer API -> Frae wird erstellt
+      // Wir brauchn alle Werte aus dem Formular
+      // Redirect zur Homepage
+    } catch (error) {
+    } finally {
+      setIsSubmitting(false);
+    }
   }
 
   // Funktion für Erfassung der Tags:
@@ -223,7 +238,17 @@ const Question = () => {
             </FormItem>
           )}
         />
-        <Button type="submit">Submit</Button>
+        <Button
+          type="submit"
+          className="primary-gradient w-fit !text-light-900"
+          disabled={isSubmitting} // Wenn der Button gedrückt wird, dann wird er disabled. Das verhindert, dass der Button zweimal gedrückt werden kann.
+        >
+          {isSubmitting ? (
+            <>{type === "edit" ? "Editing..." : "Posting..."}</>
+          ) : (
+            <>{type === "edit" ? "Edit Question" : "Ask a Question"}</>
+          )}
+        </Button>
       </form>
     </Form>
   );
