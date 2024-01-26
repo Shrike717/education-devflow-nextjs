@@ -1,8 +1,13 @@
-"use Server";
-// Hier stehen alle Server Actions für das Questions Model
+"use server";
 
-export async function createQuestions(params) {
+import { connectToDatabase } from "../mongoose";
+
+// Here we have all the actions for the questions model:
+
+export async function createQuestion(params: any) {
+  //   console.log("[createQuestion] params:", params);
   try {
-    // Diese Funktion muss ich zur Datenbank verbinden
+    // Connect to the database:
+    await connectToDatabase();
   } catch (error) {}
 }

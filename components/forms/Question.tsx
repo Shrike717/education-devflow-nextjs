@@ -16,20 +16,21 @@ import {
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
 import { QuestionsSchema } from "@/lib/validations";
-// Importe für Editor:
+// Imports for Editor:
 import { Editor } from "@tinymce/tinymce-react";
 import { Badge } from "../ui/badge";
 import Image from "next/image";
+import { createQuestion } from "@/lib/actions/question.action";
 
-// Variable, die den Type für den Button setzt:
+// Variable, seting the type of the question button
 const type: any = "create";
 
 const Question = () => {
-  // Wir setzen ein Sicherheitsstate für das Submitten der Daten
+  // We need to set a state for the button, so that it can't be pressed twice
   const [isSubmitting, setIsSubmitting] = useState(false);
 
-  // Hier initialisieren wie useRef für den Editor:
-  const editorRef = useRef(null); // Damit holen wir uns die Werte, die eingegeben werden
+  // Here we initialize the hook for the editor
+  const editorRef = useRef(null); // With this we can access the editor values
 
   // Zod 1. Define your form.
   const form = useForm<z.infer<typeof QuestionsSchema>>({
@@ -42,14 +43,19 @@ const Question = () => {
   });
 
   // Zod 2. Define a submit handler.
-  function onSubmit(values: z.infer<typeof QuestionsSchema>) {
-    // Wir setzen den Sicherheitsstate auf true. Damit wird verhindert, dass der Button zweimal gedrückt werden kann und Chaos in der Datenbank verursacht
+  async function onSubmit(values: z.infer<typeof QuestionsSchema>) {
+    // We set the button to disabled and show a loading state. This prevents the button from being pressed twice.
     setIsSubmitting(true);
 
-    // Hier können wir zwei Dinge tun: eine Frage createn oder editen
+    // console.log("[Question onSubmit] values:", values);
+
+    // Here we can make two things: Create a new question or edit an existing one
     try {
-      // Mache einen async Call zu unserer API -> Frae wird erstellt
-      // Wir brauchn alle Werte aus dem Formular
+      // We mak an async call to the backend -> createQuestion
+      // We need to pass the values from the form to the backend
+
+      await createQuestion({});
+
       // Redirect zur Homepage
     } catch (error) {
     } finally {
@@ -57,17 +63,17 @@ const Question = () => {
     }
   }
 
-  // Funktion für Erfassung der Tags:
+  // Function for getting the tags
   const handleInputKeyDown = (
-    // TS: React.KeyboardEvent<HTMLInputElement> ist der Typ des Events
+    // TS: React.KeyboardEvent<HTMLInputElement> is the type of the event
     e: React.KeyboardEvent<HTMLInputElement>,
     field: any
   ) => {
-    // Wenn Enter gedrückt wird, dann wird der Wert in das Array gepusht
+    // When the user presses Enter and the field name is tags then we want to add the tag to the array
     if (e.key === "Enter" && field.name === "tags") {
       e.preventDefault();
 
-      // Hier holen wir uns den Wert aus dem Inputfeld
+      // Here we get the value of the input field
       const tagInput = e.target as HTMLInputElement;
       const tagValue = tagInput.value.trim();
 
@@ -79,29 +85,29 @@ const Question = () => {
           });
         }
 
-        // Wir checken, ob es den Tag schon in den fields gibt
+        // We check if the tag is already in the array
         if (!field.value.includes(tagValue as never)) {
-          // Wenn nicht, dann wird er in einen Array gepusht
+          // If not, then we add it to the array
           form.setValue("tags", [...field.value, tagValue]);
-          // Und danach das Inputfeld wird geleert
+          // And after that we clear the input field
           tagInput.value = "";
-          // Und die Form soll die Errors und die Tags auch löschen
+          // And the form should clear the errors and tags alo
           form.clearErrors("tags");
         }
       }
     } else {
-      // Wenn Enter nicht gedrückt wurde wird die Validierung manuell getriggert.
+      // If enter was not pressed, then we trigger the validation manually
       form.trigger();
     }
   };
 
-  // Funktion für das Löschen der Tags
+  // Function for removing the tags
   const handleTagRemove = (tag: string, field: any) => {
-    // Wir holen uns die Tags aus dem Array
+    // We get the tags from the array
     const tags = field.value;
-    // Wir filtern die Tags, die nicht gelöscht werden sollen
+    // We filter the tags and remove the one that was clicked
     const filteredTags = tags.filter((t: string) => t !== tag);
-    // Und setzen die neuen Tags
+    // And then we set the new value of the tags
     form.setValue("tags", filteredTags);
   };
 
@@ -117,7 +123,7 @@ const Question = () => {
           render={({ field }) => (
             <FormItem className="flex w-full flex-col">
               <FormLabel className="paragraph-semibold text-dark400_light800">
-                {/* Asterix heißt mandatory */}
+                {/* Asterix means mandatory */}
                 Question Title <span className="text-primary-500">*</span>
               </FormLabel>
               <FormControl className="mt-3.5">
@@ -130,7 +136,7 @@ const Question = () => {
                 Be specific and imagine you&apos;re asking a question to another
                 person.
               </FormDescription>
-              {/* FormMessage ist für den Error */}
+              {/* FormMessage is for the error */}
               <FormMessage className="text-red-500" />
             </FormItem>
           )}
@@ -141,7 +147,7 @@ const Question = () => {
           render={({ field }) => (
             <FormItem className="flex w-full flex-col gap-3">
               <FormLabel className="paragraph-semibold text-dark400_light800">
-                {/* Asterix heißt mandatory */}
+                {/* Asterix means mandatory */}
                 Detailed explanation of your problem.{" "}
                 <span className="text-primary-500">*</span>
               </FormLabel>
@@ -150,7 +156,10 @@ const Question = () => {
                 <Editor
                   apiKey={process.env.NEXT_PUBLIC_TINY_EDITOR_API_KEY}
                   onInit={(evt, editor) => (editorRef.current = editor)}
-                  initialValue="<p>This is the initial content of the editor.</p>"
+                  initialValue=""
+                  // Witth the following two lines we can access the values of the editor
+                  onBlur={field.onBlur}
+                  onEditorChange={(content) => field.onChange(content)}
                   init={{
                     height: 350,
                     menubar: false,
@@ -184,7 +193,7 @@ const Question = () => {
                 Introduce the problem and expand on what you put in the title.
                 Minimum 20 characters.
               </FormDescription>
-              {/* FormMessage ist für den Error */}
+              {/* FormMessage is for the Error */}
               <FormMessage className="text-red-500" />
             </FormItem>
           )}
@@ -195,7 +204,7 @@ const Question = () => {
           render={({ field }) => (
             <FormItem className="flex w-full flex-col">
               <FormLabel className="paragraph-semibold text-dark400_light800">
-                {/* Asterix heißt mandatory */}
+                {/* Asterix means mandatory */}
                 Tags <span className="text-primary-500">*</span>
               </FormLabel>
               <FormControl className="mt-3.5">
@@ -206,7 +215,7 @@ const Question = () => {
                     onKeyDown={(e) => handleInputKeyDown(e, field)}
                   />
 
-                  {/* Hier werden die Tags angezeigt */}
+                  {/* Here we show the tags */}
                   {field.value.length > 0 && (
                     <div className="flex-start mt-2.5 gap-2.5">
                       {field.value.map((tag: any) => (
@@ -233,7 +242,7 @@ const Question = () => {
                 Add up to 3 tags to describe what your question is about. You
                 need to press enter to add a tag.
               </FormDescription>
-              {/* FormMessage ist für den Error */}
+              {/* FormMessage is for the Error */}
               <FormMessage className="text-red-500" />
             </FormItem>
           )}
@@ -241,7 +250,7 @@ const Question = () => {
         <Button
           type="submit"
           className="primary-gradient w-fit !text-light-900"
-          disabled={isSubmitting} // Wenn der Button gedrückt wird, dann wird er disabled. Das verhindert, dass der Button zweimal gedrückt werden kann.
+          disabled={isSubmitting} // If the button is disabled, then we show a loading state. This prevents the button from being pressed twice.
         >
           {isSubmitting ? (
             <>{type === "edit" ? "Editing..." : "Posting..."}</>
