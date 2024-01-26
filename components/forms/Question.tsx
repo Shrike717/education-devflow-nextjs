@@ -21,13 +21,23 @@ import { Editor } from "@tinymce/tinymce-react";
 import { Badge } from "../ui/badge";
 import Image from "next/image";
 import { createQuestion } from "@/lib/actions/question.action";
+import { useRouter, usePathname } from "next/navigation";
 
 // Variable, seting the type of the question button
 const type: any = "create";
 
-const Question = () => {
+// Props interface
+interface Props {
+  mongoUser: string;
+}
+
+const Question = ({ mongoUser }: Props) => {
   // We need to set a state for the button, so that it can't be pressed twice
   const [isSubmitting, setIsSubmitting] = useState(false);
+
+  // router and pathname
+  const router = useRouter();
+  const pathname = usePathname(); // Wee use this to know on which url we are right now
 
   // Here we initialize the hook for the editor
   const editorRef = useRef(null); // With this we can access the editor values
@@ -54,9 +64,15 @@ const Question = () => {
       // We mak an async call to the backend -> createQuestion
       // We need to pass the values from the form to the backend
 
-      await createQuestion({});
+      await createQuestion({
+        title: values.title,
+        content: values.explanation,
+        tags: values.tags,
+        author: JSON.parse(mongoUser),
+      });
 
-      // Redirect zur Homepage
+      // Redirect to Homepage after the question was created
+      router.push("/");
     } catch (error) {
     } finally {
       setIsSubmitting(false);
