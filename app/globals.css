@@ -4,6 +4,7 @@
 
 @import url("../styles/theme.css");
 
+/* Here we define for example utility classes. This means we define custom classNames containing several style rules. Keeps code shorter */
 body {
   font-family: "Inter", sans-serif;
 }

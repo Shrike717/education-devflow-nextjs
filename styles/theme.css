@@ -3,7 +3,7 @@
 @tailwind utilities;
 
 /* Hier legen wir Styles fest, die sowohl für den hellen, als auch für den dunklen Mode gleichzeitig gesetzt werden können */
-/* Ebenso die Schriftarten und Größen aus dem Design Guide */
+/* Hintergrundfarben und ebenso die Schriftarten und Schriftgrößen aus dem Design Guide */
 @layer utilities {
   .background-light850_dark100 {
     @apply bg-light-850 dark:bg-dark-100;

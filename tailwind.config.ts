@@ -1,4 +1,4 @@
-// Hier müsste man bei extend die ganzen Werte aus dem Style Guide eingeben.
+// Hier muss man bei extend die ganzen Werte aus dem Style Guide eingeben.
 /** @type {import('tailwindcss').Config} */
 module.exports = {
   darkMode: ["class"],
