@@ -2,12 +2,30 @@
 
 import Question from "@/database/question.model";
 import { connectToDatabase } from "../mongoose";
+import { CreateQuestionParams, GetQuestionsParams } from "./shared.types";
 import Tag from "@/database/tag.model";
+import User from "@/database/user.model";
+import { revalidatePath } from "next/cache";
 
 // Here we have all the actions for the questions model:
 
-/* eslint-disable */
-export async function createQuestion(params: any) {
+export async function getQuestions(params: GetQuestionsParams) {
+  try {
+    connectToDatabase();
+
+    const questions = await Question.find({})
+      .populate({ path: "tags", model: Tag }) // We populate all tag properties to the question.
+      .populate({ path: "author", model: User }) // We populate all user properties to the question.
+      .sort({ createdAt: -1 }); // We sort the questions by createdAt in descending order.
+
+    return { questions };
+  } catch (error) {
+    console.log(error);
+    throw error;
+  }
+}
+
+export async function createQuestion(params: CreateQuestionParams) {
   //   console.log("[createQuestion] params:", params);
   try {
     // Connect to the database:
@@ -51,9 +69,11 @@ export async function createQuestion(params: any) {
     // We need to create an interaction record for the users ask_question action. We want to track that this user created that question.
 
     // And  then we want to increment authors reputation by 5 points for creating a question:
+
+    // This mechanism shows the new question without reloading the homepage:
+    revalidatePath(path);
   } catch (error) {
-    throw error;
     console.log(error);
+    throw error;
   }
 }
-/* eslint-enable */

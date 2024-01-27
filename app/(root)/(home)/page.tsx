@@ -5,50 +5,18 @@ import NoResult from "@/components/shared/NoResult";
 import LocalSearchbar from "@/components/shared/search/LocalSearchbar";
 import { Button } from "@/components/ui/button";
 import { HomePageFilters } from "@/constants/filters";
+import { getQuestions } from "@/lib/actions/question.action";
 import Link from "next/link";
 
-// Vorübergehender Dummy Content for Questions:
-const questions = [
-  {
-    _id: "1",
-    title: "How to use React Query?",
-    tags: [
-      { _id: 1, name: "React" },
-      { _id: 2, name: "React Query" },
-    ],
-    author: {
-      _id: "author1",
-      name: "John Doe",
-      picture: "https://example.com/johndoe.jpg",
-    },
-    upvotes: 1500,
-    views: 500600,
-    answers: [{}, {}, {}], // Assuming answers is an array of objects
-    createdAt: new Date("2024-01-02T15:51:50.000Z"),
-  },
-  {
-    _id: "2",
-    title: "How can I center a div?",
-    tags: [
-      { _id: 1, name: "Css" },
-      { _id: 2, name: "Tailwind" },
-    ],
-    author: {
-      _id: "author2",
-      name: "John Smith",
-      picture: "https://example.com/johndoe.jpg",
-    },
-    upvotes: 10,
-    views: 100,
-    answers: [{}, {}], // Assuming answers is an array of objects
-    createdAt: new Date("2023-12-02T15:51:50.000Z"),
-  },
-];
+export default async function Home() {
+  // Fetching all questions from the database:
+  const result = await getQuestions({});
 
-export default function Home() {
+  //   console.log("[Homepage] result:", result.questions);
+
   return (
     <>
-      {/* flex-col-reverse: Auf kleinen Devices wird der Button vor der Schrift angezeigt */}
+      {/* flex-col-reverse: On small devices the button is shhown before the text */}
       <div className="flex w-full flex-col-reverse justify-between gap-4 sm:flex-row sm:items-center">
         <h1 className="h1-bold text-dark100_light900">All Questions</h1>
 
@@ -83,8 +51,8 @@ export default function Home() {
       <HomeFilters />
 
       <div className="mt-10 flex w-full flex-col gap-6">
-        {questions.length > 0 ? (
-          questions.map((question) => (
+        {result.questions.length > 0 ? (
+          result.questions.map((question) => (
             <QuestionCard // Reusable Component QuestionCard
               key={question._id}
               _id={question._id}

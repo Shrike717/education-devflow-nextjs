@@ -5,7 +5,6 @@ import { connectToDatabase } from "../mongoose";
 
 // Here we have all the actions for the users model:
 
-/* eslint-disable */
 export async function getUserById(params: any) {
   //   console.log("[getUserById] params:", params);
   try {
@@ -21,8 +20,7 @@ export async function getUserById(params: any) {
     // Return the user:
     return user;
   } catch (error) {
-    throw error;
     console.log(error);
+    throw error;
   }
 }
-/* eslint-enable */

@@ -17,7 +17,7 @@ const Page = async () => {
   // Now we get the user from the database by calling the server action and passing the clerk userId
   const mongoUser = await getUserById({ userId });
 
-  console.log("[ask-question Page] mongoUser:", mongoUser);
+  //   console.log("[ask-question Page] mongoUser:", mongoUser);
 
   return (
     <div>
