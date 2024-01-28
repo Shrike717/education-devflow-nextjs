@@ -62,12 +62,12 @@ export async function updateUser(params: UpdateUserParams) {
     await connectToDatabase();
 
     // Then we have to destructure the params:
-    const { clerkId, updatedData, path } = params;
+    const { clerkId, updateData, path } = params;
 
     // Update the user:
     await User.findOneAndUpdate(
       { clerkId }, // We want to find the user by the clerkId
-      updatedData, // Then We want to update the user with the updatedData
+      updateData, // Then We want to update the user with the updatedData
       { new: true }
     );
 
