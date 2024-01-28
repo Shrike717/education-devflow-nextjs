@@ -40,7 +40,7 @@ const Question = ({ mongoUser }: Props) => {
   const pathname = usePathname(); // Wee use this to know on which url we are right now
 
   // Here we initialize the hook for the editor
-  const editorRef = useRef(null); // With this we can access the editor values
+  const editorRef = useRef<Editor | null>(null); // With this we can access the editor values
 
   // Zod 1. Define your form.
   const form = useForm<z.infer<typeof QuestionsSchema>>({
