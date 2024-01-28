@@ -17,7 +17,7 @@ import {
 import { Input } from "@/components/ui/input";
 import { QuestionsSchema } from "@/lib/validations";
 // Imports for Editor:
-import { Editor } from "@tinymce/tinymce-react";
+import { Editor as TinyMCEEditor } from "@tinymce/tinymce-react";
 import { Badge } from "../ui/badge";
 import Image from "next/image";
 import { createQuestion } from "@/lib/actions/question.action";
@@ -40,7 +40,7 @@ const Question = ({ mongoUser }: Props) => {
   const pathname = usePathname(); // Wee use this to know on which url we are right now
 
   // Here we initialize the hook for the editor
-  const editorRef = useRef<Editor | null>(null); // With this we can access the editor values
+  const editorRef = useRef<TinyMCEEditor | null>(null); // With this we can access the editor values
 
   // Zod 1. Define your form.
   const form = useForm<z.infer<typeof QuestionsSchema>>({
