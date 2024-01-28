@@ -1,3 +1,6 @@
+/* eslint-disable no-sequences */
+/* eslint-disable no-unused-expressions */
+/* eslint-disable no-labels */
 Title: "Mongoose Schema Validation Problem in Node.js: Need Assistance";
 
 Content: "Encountering difficulties with Mongoose Schema validation in my Node.js app. Despite having 'title' and 'content' as required fields in the Schema, there are no validation errors when creating a document without them. Seeking help to troubleshoot and resolve this issue. Any insights are appreciated. Thanks!";
