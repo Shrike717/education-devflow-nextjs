@@ -92,7 +92,7 @@ export async function POST(req: Request) {
     // Call a server action to create a user in the database:
     const mongoUser = await updateUser({
       clerkId: id,
-      updatedData: {
+      updateData: {
         name: `${first_name}${last_name ? ` ${last_name}` : ""}`,
         username: username!, // We know that username is not null because we are creating a user with Clerk
         email: email_addresses[0].email_address,
