@@ -17,13 +17,7 @@ interface Props {
   containerClasses?: string;
 }
 
-const Filter = ({
-  filters,
-  otherClasses,
-  containerClasses,
-}: {
-  filters: Props;
-}) => {
+const Filter = ({ filters, otherClasses, containerClasses }: Props) => {
   return (
     <div className={`relative ${containerClasses}`}>
       <Select>
