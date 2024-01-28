@@ -104,6 +104,7 @@ export async function deleteUser(params: DeleteUserParams) {
     const userQuestionsIds = await Question.find({ author: user._id }).distinct(
       "_id"
     ); //  Creates a distinct query: returns the distinct values of the given field that match filter.
+    console.log("userQuestionsIds:", userQuestionsIds);
 
     // Delete the questions:
     await Question.deleteMany({ author: user._id });
