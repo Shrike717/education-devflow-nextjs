@@ -170,7 +170,7 @@ const Question = ({ mongoUser }: Props) => {
               </FormLabel>
               <FormControl className="mt-3.5">
                 {/* Editor component */}
-                <Editor
+                <TinyMCEEditor
                   apiKey={process.env.NEXT_PUBLIC_TINY_EDITOR_API_KEY}
                   onInit={(evt, editor) => (editorRef.current = editor)}
                   initialValue=""
