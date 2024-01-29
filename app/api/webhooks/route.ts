@@ -59,7 +59,7 @@ export async function POST(req: Request) {
   const eventType = evt.type;
 
   console.log(`Webhook with type of ${eventType}`);
-  //   console.log("Webhook body:", body);
+  console.log("Webhook body:", body);
 
   // Here we want to do something with the events.
 
@@ -67,6 +67,8 @@ export async function POST(req: Request) {
     // Get the user data from the event
     const { id, email_addresses, image_url, username, first_name, last_name } =
       evt.data;
+
+    console.log("[Route] user.created incoming data", evt.data);
 
     // Call a server action to create a user in the database:
     const mongoUser = await createUser({

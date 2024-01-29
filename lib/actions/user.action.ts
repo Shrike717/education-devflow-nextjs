@@ -36,7 +36,6 @@ export async function getUserById(params: GetUserByIdParams) {
 
 // CREATE A USER
 export async function createUser(userData: CreateUserParams) {
-  //   console.log("[createUser] params:", params);
   try {
     // Connect to the database:
     await connectToDatabase();
@@ -56,7 +55,6 @@ export async function createUser(userData: CreateUserParams) {
 
 // UPDATE A USER
 export async function updateUser(params: UpdateUserParams) {
-  //   console.log("[createUser] params:", params);
   try {
     // Connect to the database:
     await connectToDatabase();
@@ -81,7 +79,6 @@ export async function updateUser(params: UpdateUserParams) {
 
 // DELETE A USER
 export async function deleteUser(params: DeleteUserParams) {
-  //   console.log("[createUser] params:", params);
   try {
     // Connect to the database:
     await connectToDatabase();
