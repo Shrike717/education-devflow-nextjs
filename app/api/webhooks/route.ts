@@ -58,7 +58,7 @@ export async function POST(req: Request) {
   // Get the type oo the event:
   const eventType = evt.type;
 
-  //   console.log(`Webhook with and ID of ${id} and type of ${eventType}`);
+  console.log(`Webhook with type of ${eventType}`);
   //   console.log("Webhook body:", body);
 
   // Here we want to do something with the events.

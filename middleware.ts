@@ -1,8 +1,18 @@
 import { authMiddleware } from "@clerk/nextjs";
 
-// Hier ist der Array mit den freigegebenen Public Rouuttes.
+// This is an array with routes that are public and do not require authentication.
 export default authMiddleware({
-  publicRoutes: ["/"],
+  publicRoutes: [
+    "/",
+    "/api/webhooks",
+    "question/:id",
+    "/tags",
+    "/tags/:id",
+    "/profile/:id",
+    "/community",
+    "/jobs",
+  ],
+  ignoredRoutes: ["/api/webhooks", "/api/chatgpt"],
 });
 
 export const config = {
