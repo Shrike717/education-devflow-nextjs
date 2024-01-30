@@ -41,9 +41,7 @@ export async function createUser(userData: CreateUserParams) {
     await connectToDatabase();
 
     // Create the user:
-    const newUser = await User.create({
-      userData,
-    });
+    const newUser = await User.create(userData);
 
     // Return the user:
     return newUser;
