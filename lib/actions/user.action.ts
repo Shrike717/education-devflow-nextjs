@@ -55,7 +55,10 @@ export async function createUser(userData: CreateUserParams): Promise<IUser> {
 }
 
 // UPDATE A USER
-export async function updateUser(params: UpdateUserParams): Promise<IUser> {
+export async function updateUser(
+  params: UpdateUserParams
+): Promise<IUser | void> {
+  // Delete void when we return a user later
   try {
     // Connect to the database:
     await connectToDatabase();
