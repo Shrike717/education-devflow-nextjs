@@ -14,7 +14,7 @@ interface Props {
   };
 }
 
-const UserCard = async ({ user }: Props): JSX.Element => {
+const UserCard = async ({ user }: Props): Promise<JSX.Element> => {
   // Getting the getTopInteractedTags:
   const interactedTags = await getTopInteractedTags({ userId: user._id });
 
