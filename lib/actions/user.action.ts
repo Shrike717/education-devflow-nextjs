@@ -57,7 +57,7 @@ export async function createUser(userData: CreateUserParams): Promise<User> {
 // UPDATE A USER
 export async function updateUser(
   params: UpdateUserParams
-): Promise<ReactElement> {
+): Promise<JSX.Element> {
   try {
     // Connect to the database:
     await connectToDatabase();
@@ -83,7 +83,7 @@ export async function updateUser(
 // DELETE A USER
 export async function deleteUser(
   params: DeleteUserParams
-): Promise<ReactElement> {
+): Promise<JSX.Element> {
   try {
     // Connect to the database:
     await connectToDatabase();
