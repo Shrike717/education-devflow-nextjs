@@ -1,6 +1,6 @@
 "use server";
 
-import User from "@/database/user.model";
+import User, { IUser } from "@/database/user.model";
 import { connectToDatabase } from "../mongoose";
 import {
   CreateUserParams,
@@ -17,7 +17,7 @@ import Question from "@/database/question.model";
 // GET ONE USER BY ID
 export async function getUserById(
   params: GetUserByIdParams
-): Promise<User | null> {
+): Promise<IUser | null> {
   //   console.log("[getUserById] params:", params);
   try {
     // Connect to the database:
@@ -38,7 +38,7 @@ export async function getUserById(
 }
 
 // CREATE A USER
-export async function createUser(userData: CreateUserParams): Promise<User> {
+export async function createUser(userData: CreateUserParams): Promise<IUser> {
   try {
     // Connect to the database:
     await connectToDatabase();
@@ -55,9 +55,7 @@ export async function createUser(userData: CreateUserParams): Promise<User> {
 }
 
 // UPDATE A USER
-export async function updateUser(
-  params: UpdateUserParams
-): Promise<JSX.Element> {
+export async function updateUser(params: UpdateUserParams): Promise<IUser> {
   try {
     // Connect to the database:
     await connectToDatabase();
@@ -81,9 +79,7 @@ export async function updateUser(
 }
 
 // DELETE A USER
-export async function deleteUser(
-  params: DeleteUserParams
-): Promise<JSX.Element> {
+export async function deleteUser(params: DeleteUserParams): Promise<IUser> {
   try {
     // Connect to the database:
     await connectToDatabase();
