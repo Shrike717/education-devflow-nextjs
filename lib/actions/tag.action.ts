@@ -7,7 +7,7 @@ import { GetTopInteractedTagsParams } from "./shared.types";
 //
 export async function getTopInteractedTags(
   params: GetTopInteractedTagsParams
-): Promise<void> {
+): Promise<ReactElement> {
   try {
     // Connect to the database:
     await connectToDatabase();

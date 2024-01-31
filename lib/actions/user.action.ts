@@ -55,7 +55,9 @@ export async function createUser(userData: CreateUserParams): Promise<User> {
 }
 
 // UPDATE A USER
-export async function updateUser(params: UpdateUserParams): Promise<void> {
+export async function updateUser(
+  params: UpdateUserParams
+): Promise<ReactElement> {
   try {
     // Connect to the database:
     await connectToDatabase();
@@ -79,7 +81,9 @@ export async function updateUser(params: UpdateUserParams): Promise<void> {
 }
 
 // DELETE A USER
-export async function deleteUser(params: DeleteUserParams): Promise<void> {
+export async function deleteUser(
+  params: DeleteUserParams
+): Promise<ReactElement> {
   try {
     // Connect to the database:
     await connectToDatabase();

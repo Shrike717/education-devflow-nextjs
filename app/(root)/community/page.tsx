@@ -5,7 +5,7 @@ import { UserFilters } from "@/constants/filters";
 import { getAllUsers } from "@/lib/actions/user.action";
 import Link from "next/link";
 
-const Page = async (): Promise<void> => {
+const Page = async (): Promise<ReactElement> => {
   // Fetching all users from the database. Therefore component is async:
   const result = await getAllUsers({});
 
