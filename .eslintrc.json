@@ -1,9 +1,29 @@
-// Hier sind die Regeln für ESLint drin
+// Hier sind die Regeln für ESLint drin. Nach Aufsetzen mit Adrians Guide
+// {
+// 	"extends": [
+// 		"next/core-web-vitals",
+// 		"standard",
+// 		"plugin:tailwindcss/recommended",
+// 		"prettier"
+// 	]
+// }
+
+// This comes from Copilot. It should configure the ESLint to show tyypescript errors
 {
-	"extends": [
-		"next/core-web-vitals",
-		"standard",
-		"plugin:tailwindcss/recommended",
-		"prettier"
-	]
+  "extends": [
+    "next/core-web-vitals",
+    "standard",
+    "plugin:tailwindcss/recommended",
+    "prettier",
+    "plugin:@typescript-eslint/recommended" // TypeScript rules
+  ],
+  "parser": "@typescript-eslint/parser", // Specifies the ESLint parser
+  "parserOptions": {
+    "ecmaFeatures": {
+      "jsx": true // Allows for the parsing of JSX
+    }
+  },
+  "rules": {
+    "@typescript-eslint/explicit-module-boundary-types": "warn" // Warns when a React component or other function does not have explicit return type
+  }
 }

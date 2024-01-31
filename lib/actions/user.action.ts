@@ -5,6 +5,7 @@ import { connectToDatabase } from "../mongoose";
 import {
   CreateUserParams,
   DeleteUserParams,
+  GetAllUsersParams,
   GetUserByIdParams,
   UpdateUserParams,
 } from "./shared.types";
@@ -14,7 +15,9 @@ import Question from "@/database/question.model";
 // Here we have all the actions for the users model:
 
 // GET ONE USER BY ID
-export async function getUserById(params: GetUserByIdParams) {
+export async function getUserById(
+  params: GetUserByIdParams
+): Promise<User | null> {
   //   console.log("[getUserById] params:", params);
   try {
     // Connect to the database:
@@ -35,7 +38,7 @@ export async function getUserById(params: GetUserByIdParams) {
 }
 
 // CREATE A USER
-export async function createUser(userData: CreateUserParams) {
+export async function createUser(userData: CreateUserParams): Promise<User> {
   try {
     // Connect to the database:
     await connectToDatabase();
@@ -52,7 +55,7 @@ export async function createUser(userData: CreateUserParams) {
 }
 
 // UPDATE A USER
-export async function updateUser(params: UpdateUserParams) {
+export async function updateUser(params: UpdateUserParams): Promise<void> {
   try {
     // Connect to the database:
     await connectToDatabase();
@@ -76,7 +79,7 @@ export async function updateUser(params: UpdateUserParams) {
 }
 
 // DELETE A USER
-export async function deleteUser(params: DeleteUserParams) {
+export async function deleteUser(params: DeleteUserParams): Promise<void> {
   try {
     // Connect to the database:
     await connectToDatabase();
@@ -116,3 +119,36 @@ export async function deleteUser(params: DeleteUserParams) {
     throw error;
   }
 }
+
+// GET ALL USERS
+export async function getAllUsers(
+  params: GetAllUsersParams
+): Promise<{ users: User[] }> {
+  try {
+    // Connect to the database:
+    await connectToDatabase();
+
+    // Then we have to destructure the params.
+    // If the params are not provided, we set the default values:
+    // const { page = 1, pageSize = 20, filter, searchQuery } = params;
+
+    const users = await User.find({}).sort({ createdAt: -1 });
+
+    // Return the users:
+    return { users };
+  } catch (error) {
+    console.log(error);
+    throw error;
+  }
+}
+
+// export async function getAllUsers(params: GetAllUsersParams) {
+//   try {
+//     // Connect to the database:
+//     await connectToDatabase();
+
+//   } catch (error) {
+//     console.log(error);
+//     throw error;
+//   }
+// }
