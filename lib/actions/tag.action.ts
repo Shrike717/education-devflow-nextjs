@@ -4,10 +4,15 @@ import User from "@/database/user.model";
 import { connectToDatabase } from "../mongoose";
 import { GetTopInteractedTagsParams } from "./shared.types";
 
+interface Tag {
+  _id: string;
+  name: string;
+}
+
 //
 export async function getTopInteractedTags(
   params: GetTopInteractedTagsParams
-): Promise<GetTopInteractedTagsParams[]> {
+): Promise<Tag[]> {
   try {
     // Connect to the database:
     await connectToDatabase();
