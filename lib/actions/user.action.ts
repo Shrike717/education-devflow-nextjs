@@ -126,7 +126,7 @@ export async function deleteUser(params: DeleteUserParams): Promise<IUser> {
 // GET ALL USERS
 export async function getAllUsers(
   params: GetAllUsersParams
-): Promise<{ users: User[] }> {
+): Promise<{ users: IUser[] }> {
   try {
     // Connect to the database:
     await connectToDatabase();
