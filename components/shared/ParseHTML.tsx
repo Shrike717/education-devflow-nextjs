@@ -32,12 +32,12 @@ interface Props {
   data: string;
 }
 const ParseHTML = ({ data }: Props) => {
-  // Initializin Prism. This higlihts all the coontent pecieved as code
+  // Initializing Prism. This higlights all the content percieved as code
   useEffect(() => {
     Prism.highlightAll();
   }, []);
 
-  return <div className="text-dark200_light900">{parse(data)}</div>;
+  return <div>{parse(data)}</div>;
 };
 
 export default ParseHTML;

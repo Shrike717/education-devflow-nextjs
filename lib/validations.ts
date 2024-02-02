@@ -8,3 +8,7 @@ export const QuestionsSchema = z.object({
   // Ein Array mit Strings. Mindestens 1 Tag, maximal 3 Tags. Jeder String muss mindestens 1 und maximal 15 Zeichen lang sein.
   tags: z.array(z.string().min(1).max(15)).min(1).max(3),
 });
+
+export const AnswersSchema = z.object({
+  answer: z.string().min(100),
+});

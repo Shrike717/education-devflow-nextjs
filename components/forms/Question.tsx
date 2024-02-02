@@ -23,6 +23,7 @@ import { Badge } from "../ui/badge";
 import Image from "next/image";
 import { createQuestion } from "@/lib/actions/question.action";
 import { useRouter, usePathname } from "next/navigation";
+import { useTheme } from "@/context/ThemeProvider";
 
 // Variable, seting the type of the question button
 const type: any = "create";
@@ -33,6 +34,9 @@ interface Props {
 }
 
 const Question = ({ mongoUser }: Props) => {
+  // Here we use the mode ccntext to  show editor dark skin in dark mode
+  const { mode } = useTheme();
+
   // We need to set a state for the button, so that it can't be pressed twice
   const [isSubmitting, setIsSubmitting] = useState(false);
 
@@ -109,7 +113,7 @@ const Question = ({ mongoUser }: Props) => {
           form.setValue("tags", [...field.value, tagValue]);
           // And after that we clear the input field
           tagInput.value = "";
-          // And the form should clear the errors and tags alo
+          // And the form should clear the errors and tags also
           form.clearErrors("tags");
         }
       }
@@ -204,6 +208,8 @@ const Question = ({ mongoUser }: Props) => {
                       "alignright alignjustify | bullist numlist ",
                     content_style:
                       "body { font-family:Helvetica,Arial,sans-serif; font-size:14px }",
+                    skin: mode === "dark" ? "oxide-dark" : "oxide",
+                    content_css: mode === "dark" ? "dark" : "light",
                   }}
                 />
               </FormControl>

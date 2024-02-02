@@ -64,7 +64,9 @@ const Page = async ({ params }) => {
       </div>
 
       {/* Here we show the content of the question */}
-      <ParseHTML data={result.content} />
+      <div className="text-dark200_light900">
+        <ParseHTML data={result.content} />
+      </div>
 
       <div className="mt-8 flex flex-wrap gap-2">
         {result.tags.map((tag) => (
