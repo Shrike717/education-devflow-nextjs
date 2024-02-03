@@ -3,15 +3,23 @@ import Metric from "@/components/shared/Metric";
 import ParseHTML from "@/components/shared/ParseHTML";
 import RenderTag from "@/components/shared/RenderTag";
 import { getQuestionById } from "@/lib/actions/question.action";
+import { getUserById } from "@/lib/actions/user.action";
 import { formatBigNumber, getTimestamp } from "@/lib/utils";
+import { auth } from "@clerk/nextjs";
 import Image from "next/image";
 import Link from "next/link";
 import React from "react";
 
 const Page = async ({ params }) => {
   const result = await getQuestionById({ questionId: params.id });
+  // Geting the userId from the clerk. With this we can get the userID from the mongoUser
+  const { userId: clerkId } = auth();
 
-  //   console.log("[Page Detail Question] result:", result);
+  let mongoUser; // And then we can pass the mongoUser to the Answer component
+
+  if (clerkId) {
+    mongoUser = await getUserById({ userId: clerkId });
+  }
 
   return (
     <>
@@ -79,7 +87,11 @@ const Page = async ({ params }) => {
         ))}
       </div>
 
-      <Answer />
+      <Answer
+        question={result.content}
+        questionId={JSON.stringify(result._id)}
+        authorId={JSON.stringify(mongoUser._id)}
+      />
     </>
   );
 };

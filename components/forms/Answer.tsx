@@ -17,8 +17,18 @@ import { useRef, useState } from "react";
 import { useTheme } from "@/context/ThemeProvider";
 import { Button } from "../ui/button";
 import Image from "next/image";
+import { createAnswer } from "@/lib/actions/answer.action";
+import { usePathname } from "next/navigation";
 
-const Answer = () => {
+interface Props {
+  question: string;
+  questionId: string;
+  authorId: string;
+}
+
+const Answer = ({ question, questionId, authorId }: Props) => {
+  // Getting the current path  where the user is, so that we can update a page after the answer is created. We need to pass the path to:
+  const pathname = usePathname();
   // Here we use the mode ccntext to  show editor dark skin in dark mode
   const { mode } = useTheme();
 
@@ -37,7 +47,31 @@ const Answer = () => {
   });
 
   // 2. Define your submit handler:
-  const handleCreateAnswer = async (data: z.infer<typeof AnswersSchema>) => {};
+  const handleCreateAnswer = async (values: z.infer<typeof AnswersSchema>) => {
+    setIsSubmitting(true); // We set the state to true, so that the button can't be pressed twice
+
+    try {
+      await createAnswer({
+        content: values.answer,
+        author: JSON.parse(authorId),
+        question: JSON.parse(questionId),
+        path: pathname, // This is needed to update the page after the answer is created
+      });
+
+      // Then we reset the form
+      form.reset();
+      // And we reset the editor
+      if (editorRef.current) {
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+        const editor = editorRef.current as any;
+        editor.setContent("");
+      }
+    } catch (error) {
+      console.error("Error creating answer", error);
+    } finally {
+      setIsSubmitting(false); // We set the state to false, so that the button can be pressed again
+    }
+  };
 
   return (
     <div>

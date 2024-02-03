@@ -80,6 +80,7 @@ const Question = ({ mongoUser }: Props) => {
       // Redirect to Homepage after the question was created
       router.push("/");
     } catch (error) {
+      console.error("Error creating question:", error);
     } finally {
       setIsSubmitting(false);
     }
@@ -89,6 +90,7 @@ const Question = ({ mongoUser }: Props) => {
   const handleInputKeyDown = (
     // TS: React.KeyboardEvent<HTMLInputElement> is the type of the event
     e: React.KeyboardEvent<HTMLInputElement>,
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     field: any
   ) => {
     // When the user presses Enter and the field name is tags then we want to add the tag to the array
