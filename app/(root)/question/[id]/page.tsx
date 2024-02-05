@@ -43,7 +43,16 @@ const Page = async ({ params }) => {
             </p>
           </Link>
           <div className="flex justify-end">
-            <Votes />
+            <Votes
+              type="question" // Is this a question or an answer?
+              itemId={JSON.stringify(result._id)} // The id of the question or answer
+              userId={JSON.stringify(mongoUser._id)} // The id of the user
+              upvotes={result.upvotes.length} // The number of total upvotes
+              hasUpvoted={result.upvotes.includes(mongoUser._id)} // If the user has upvoted his Id will be in the upvotes array
+              downvotes={result.downvotes.length} // The number of total downvotes
+              hasDownvoted={result.downvotes.includes(mongoUser._id)} // If the user has downvoted his Id will be in the downvotes array
+              hasSaved={mongoUser?.saved.includes(result._id)} // If the user has saved question or answer his Id will be in the saved array
+            />
           </div>
         </div>
         <h2 className="h2-semibold text-dark200_light900 mt-3.5 w-full text-left">
