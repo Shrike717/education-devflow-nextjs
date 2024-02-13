@@ -6,12 +6,15 @@ import {
   CreateUserParams,
   DeleteUserParams,
   GetAllUsersParams,
+  GetSavedQuestionsParams,
   GetUserByIdParams,
   ToggleSaveQuestionParams,
   UpdateUserParams,
 } from "./shared.types";
 import { revalidatePath } from "next/cache";
 import Question from "@/database/question.model";
+import Tag from "@/database/tag.model";
+import { FilterQuery } from "mongoose";
 
 // Here we have all the actions for the users model:
 
@@ -146,6 +149,7 @@ export async function getAllUsers(
   }
 }
 
+// TOGGLE SAVE QUESTION
 export async function toggleSaveQuestion(params: ToggleSaveQuestionParams) {
   try {
     // Connect to the database:
@@ -185,6 +189,51 @@ export async function toggleSaveQuestion(params: ToggleSaveQuestionParams) {
 
     // We have to let Next which page has to be regenerated after the user is updated
     revalidatePath(path);
+  } catch (error) {
+    console.log(error);
+    throw error;
+  }
+}
+
+// GET SAVED QUESTIONS
+export async function getSavedQuestions(params: GetSavedQuestionsParams) {
+  try {
+    // Connect to the database:
+    await connectToDatabase();
+
+    // We have to destructure the needed params:
+    const { clerkId, page = 1, pageSize = 10, filter, searchQuery } = params;
+
+    // We define the query object to filter the saved questions:
+    // In Typescript: query of type FilterQuery<typeof Question> = searchQuery
+    const query: FilterQuery<typeof Question> = searchQuery // We can add a match a query object to filter the saved questions. Its a special objekt from mongoose.Its a Regex
+      ? { title: { $regex: new RegExp(searchQuery, "i") } } // We want to filter the saved questions by the title. We use the $regex operator to match the title with the searchQuery. The $options "i" makes the search case insensitive.
+      : {}; // If there is no searchQuery, we return an empty object
+
+    // Get the user:
+    const user = await User.findOne({ clerkId }).populate({
+      path: "saved",
+      match: query, // We want to match the saved questions with the query
+      options: {
+        sort: { createdAt: -1 }, // Sort the saved questions by createdAt in descending order
+      },
+
+      populate: [
+        // We can populate the saved questions with the author and tags
+        { path: "tags", model: Tag, select: "_id name" }, // We want to populate the tags of the saved questions with the _id and name
+        { path: "author", model: User, select: "_id clerkId name picture" }, // We want to populate the author of the saved questions with the _id, name and clerkId and picture
+      ],
+    });
+
+    if (!user) {
+      throw new Error("User not found");
+    }
+
+    // We have to extract the saved questions from the user:
+    const savedQuestions = user.saved;
+
+    // Then we reeturn the saved questions:
+    return { questions: savedQuestions };
   } catch (error) {
     console.log(error);
     throw error;
