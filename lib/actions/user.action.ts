@@ -7,6 +7,7 @@ import {
   DeleteUserParams,
   GetAllUsersParams,
   GetUserByIdParams,
+  ToggleSaveQuestionParams,
   UpdateUserParams,
 } from "./shared.types";
 import { revalidatePath } from "next/cache";
@@ -139,6 +140,51 @@ export async function getAllUsers(
 
     // Return the users:
     return { users };
+  } catch (error) {
+    console.log(error);
+    throw error;
+  }
+}
+
+export async function toggleSaveQuestion(params: ToggleSaveQuestionParams) {
+  try {
+    // Connect to the database:
+    await connectToDatabase();
+
+    const { userId, questionId, path } = params;
+
+    // Get the user:
+    const user = await User.findById(userId);
+
+    if (!user) {
+      throw new Error("User not found");
+    }
+
+    // Check if the question has already been saved:
+    const isQuestionSaved = user.saved.includes(questionId);
+
+    // If the question is already saved, we remove it from the saved questions:
+    if (isQuestionSaved) {
+      await User.findByIdAndUpdate(
+        userId,
+        {
+          $pull: { saved: questionId }, // The $pull operator removes from an existing array all instances of a value or values that match a specified condition.
+        },
+        { new: true } // The new option returns the modified document rather than the original. New is true by default.
+      );
+    } else {
+      // If the question is not saved, we add it to the saved questions:
+      await User.findByIdAndUpdate(
+        userId,
+        {
+          $addToSet: { saved: questionId }, // The $addToSet operator adds a value to an array unless the value is already present, in which case $addToSet does nothing to that array.
+        },
+        { new: true } // The new option returns the modified document rather than the original. New is true by default.
+      );
+    }
+
+    // We have to let Next which page has to be regenerated after the user is updated
+    revalidatePath(path);
   } catch (error) {
     console.log(error);
     throw error;
