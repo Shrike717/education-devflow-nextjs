@@ -2,8 +2,13 @@
 
 import User from "@/database/user.model";
 import { connectToDatabase } from "../mongoose";
-import { GetAllTagsParams, GetTopInteractedTagsParams } from "./shared.types";
-import Tag from "@/database/tag.model";
+import {
+  GetAllTagsParams,
+  GetQuestionsByTagIdParams,
+  GetTopInteractedTagsParams,
+} from "./shared.types";
+import Tag, { ITag } from "@/database/tag.model";
+import Question from "@/database/question.model";
 
 interface Tag {
   _id: string;
@@ -55,6 +60,52 @@ export async function getAllTags(
     const tags = await Tag.find();
 
     return { tags };
+  } catch (error) {
+    console.log(error);
+    throw error;
+  }
+}
+
+// GET QUESTIONS RELATED TO TAG:
+export async function getQuestionsByTagId(params: GetQuestionsByTagIdParams) {
+  try {
+    // Connect to the database:
+    await connectToDatabase();
+
+    // Then we have to destructure the params:
+    const { tagId, page = 1, pageSize = 10, searchQuery } = params;
+
+    // We define the query object to filter the questions related to the tag:
+    // In Typescript: query of type FilterQuery<typeof Question> = searchQuery
+    const tagFilter: FilterQuery<ITag> = { _id: tagId }; // Here we filter the tag by the tagId
+
+    // Get the tag:
+    const tag = await Tag.findOne(tagFilter).populate({
+      path: "questions",
+      model: Question,
+      match: searchQuery // We want to match the questions related to the tag with the searchQuery
+        ? { title: { $regex: searchQuery, $options: "i" } } // We want to filter the questions by the title. We use the $regex operator to match the title with the searchQuery. The $options "i" makes the search case insensitive.
+        : {}, // If there is no searchQuery, we return an empty object
+      options: {
+        sort: { createdAt: -1 }, // Sort the questions by createdAt in descending order
+      },
+
+      populate: [
+        // We can populate the saved questions with the author and tags
+        { path: "tags", model: Tag, select: "_id name" }, // We want to populate the tags of the related questions with the _id and name
+        { path: "author", model: User, select: "_id clerkId name picture" }, // We want to populate the author of the saved questions with the _id, name and clerkId and picture
+      ],
+    });
+
+    if (!tag) {
+      throw new Error("Tag not found");
+    }
+
+    // Here we have to extract the related questions from the tag:
+    const questions = tag.questions;
+
+    // Then we reeturn the saved questions:
+    return { tagTitle: tag.name, questions };
   } catch (error) {
     console.log(error);
     throw error;
