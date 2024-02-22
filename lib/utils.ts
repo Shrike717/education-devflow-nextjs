@@ -1,15 +1,15 @@
-// Dieser Code gehört zur Konfiguration von ShadCn. Wurde automatisch beim initialisieren angelegt
+// This code belongs to the configuration of ShadCn. Was created automatically during initialization
 import { type ClassValue, clsx } from "clsx";
 import { twMerge } from "tailwind-merge";
 
-// Dieser Code gehört zur Konfiguration von ShadCn. Wurde automatisch beim initialisieren angelegt
+// This code belongs to the configuration of ShadCn. Was created automatically during initialization
 export function cn(...inputs: ClassValue[]) {
   return twMerge(clsx(inputs));
 }
 
-// Hilfsfunktion, um aus einem Datum einen Timestamp zu generieren.
-// Gibt den Timestamp als String zurück.
-// Mit Chad GPT erstellt
+// Helper function to generate a timestamp from a date.
+// Returns the timestamp as a string.
+// Created with Chat GPT:
 export function getTimestamp(createdAt: Date): string {
   const now = new Date();
   const timeDifference = now.getTime() - createdAt.getTime();
@@ -30,10 +30,10 @@ export function getTimestamp(createdAt: Date): string {
   }
 }
 
-// Diese Hilfsfunktion wandelt Big Numbers in eine lesbare Form um:
+// This helper function converts Big Numbers into a readable form:
 // 1.000.000 -> 1M
 // 1.000 -> 1k
-// Mit Chad GPT erstellt
+// Created with Chat GPT:
 export function formatBigNumber(number: number): string {
   if (number >= 1000000) {
     return (number / 1000000).toFixed(1) + "M";
@@ -42,4 +42,12 @@ export function formatBigNumber(number: number): string {
   } else {
     return number.toString();
   }
+}
+
+// This function gets a date object and returns a joined date string (Month, Year)
+// Created with Chat GPT:
+export function getJoinedDate(date: Date): string {
+  const month = date.toLocaleString("default", { month: "long" });
+  const year = date.getFullYear();
+  return `${month} ${year}`;
 }

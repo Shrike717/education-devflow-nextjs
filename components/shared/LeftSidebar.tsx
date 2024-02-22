@@ -5,9 +5,11 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 import React from "react";
 import { Button } from "../ui/button";
-import { SignedOut } from "@clerk/nextjs";
+import { SignedOut, useAuth } from "@clerk/nextjs";
 
 const LeftSidebar = () => {
+  // Getting the userId on a client side component to use it in the profile link
+  const { userId } = useAuth();
   // Wir holen uns den aktuellen Pfad.
   const pathname = usePathname();
   return (
@@ -19,7 +21,14 @@ const LeftSidebar = () => {
             (pathname.includes(item.route) && item.route.length > 1) ||
             pathname === item.route;
 
-          // TODO: Später müssen wir den Profilelink mit einer ID rufen können
+          // Check on which route we currently are. If we are on /profile, we want to add the user id to the link.
+          if (item.route === "/profile") {
+            if (userId) {
+              item.route = `/profile/${userId}`;
+            } else {
+              return null; // Meaning we can not click on that link.
+            }
+          }
 
           return (
             <Link

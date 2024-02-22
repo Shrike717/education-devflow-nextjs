@@ -15,6 +15,7 @@ import { revalidatePath } from "next/cache";
 import Question from "@/database/question.model";
 import Tag from "@/database/tag.model";
 import { FilterQuery } from "mongoose";
+import Answer from "@/database/answer.model";
 
 // Here we have all the actions for the users model:
 
@@ -234,6 +235,35 @@ export async function getSavedQuestions(params: GetSavedQuestionsParams) {
 
     // Then we reeturn the saved questions:
     return { questions: savedQuestions };
+  } catch (error) {
+    console.log(error);
+    throw error;
+  }
+}
+
+// GET USER INFO FOR PROFILE DETAIL PAGE
+export async function getUserInfo(params: GetUserByIdParams) {
+  try {
+    // Connect to the database:
+    await connectToDatabase();
+
+    // We have to destructure the needed params:
+    const { userId } = params;
+
+    // Get the user:
+    const user = await User.findOne({ clerkId: userId });
+
+    if (!user) {
+      throw new Error("User not found");
+    }
+
+    //  Then we need some additional data for the user:
+    // Get the total count of user's questions and answers:
+    const totalQuestions = await Question.countDocuments({ author: user._id });
+    const totalAnswers = await Answer.countDocuments({ author: user._id });
+
+    // Return the user and the additional data:
+    return { user, totalQuestions, totalAnswers };
   } catch (error) {
     console.log(error);
     throw error;
