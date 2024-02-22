@@ -9,6 +9,7 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { getJoinedDate } from "@/lib/utils";
 import ProfileLink from "@/components/shared/ProfileLink";
 import Stats from "@/components/shared/Stats";
+import QuestionTab from "@/components/shared/QuestionTab";
 
 const Page = async ({ params, searchParams }: URLProps) => {
   // Getting the logged in user's clerkId from a server-side component:
@@ -16,6 +17,7 @@ const Page = async ({ params, searchParams }: URLProps) => {
 
   // Fetching the user data we need for this page:
   const userInfo = await getUserInfo({ userId: params.id }); // We specify which user we want to get by the userId
+
   return (
     <>
       <div className="flex flex-col-reverse items-start justify-between sm:flex-row">
@@ -81,7 +83,10 @@ const Page = async ({ params, searchParams }: URLProps) => {
         </div>
       </div>
       {/* Here we show some stats */}
-      <Stats />
+      <Stats
+        totalQuestions={userInfo.totalQuestions}
+        totalAnswers={userInfo.totalAnswers}
+      />
       <div className="mt-10 flex gap-10">
         <Tabs defaultValue="top-posts" className="flex-1">
           <TabsList className="background-light800_dark400 min-h-[42px] p-1">
@@ -92,8 +97,10 @@ const Page = async ({ params, searchParams }: URLProps) => {
               Answers
             </TabsTrigger>
           </TabsList>
-          <TabsContent value="top-posts">POSTS</TabsContent>
-          <TabsContent value="answers">ANSWERS</TabsContent>
+          <TabsContent value="top-posts">
+            <QuestionTab />
+          </TabsContent>
+          <TabsContent value="answers"> AnswerTab</TabsContent>
         </Tabs>
       </div>
     </>
