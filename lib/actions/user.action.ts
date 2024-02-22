@@ -8,6 +8,7 @@ import {
   GetAllUsersParams,
   GetSavedQuestionsParams,
   GetUserByIdParams,
+  GetUserStatsParams,
   ToggleSaveQuestionParams,
   UpdateUserParams,
 } from "./shared.types";
@@ -264,6 +265,32 @@ export async function getUserInfo(params: GetUserByIdParams) {
 
     // Return the user and the additional data:
     return { user, totalQuestions, totalAnswers };
+  } catch (error) {
+    console.log(error);
+    throw error;
+  }
+}
+
+// GET USER QUESTIONS FOR PROFILE DETAIL PAGE
+export async function getUserQuestions(params: GetUserStatsParams) {
+  try {
+    // Connect to the database:
+    await connectToDatabase();
+
+    // We have to destructure the needed params:
+    const { userId, page = 1, pageSize = 10 } = params;
+
+    // Get the user's total number of questions:
+    const totalQuestions = await Question.countDocuments({ author: userId });
+
+    // Get all the user's questions:
+    const userQuestions = await Question.find({ author: userId })
+      .sort({ views: -1, upvotes: -1 }) // Sort the questions by views and upvotes in descending order
+      .populate("tags", "_id name") // Populate the questions with the tags. We want to populate the tags with the _id and name
+      .populate("author", "_id clerkId name picture"); // Populate the questions with the author. We want to populate the author with the _id, clerkId, name and picture
+
+    // Return the user's questions:
+    return { questions: userQuestions, totalQuestions };
   } catch (error) {
     console.log(error);
     throw error;
