@@ -297,6 +297,32 @@ export async function getUserQuestions(params: GetUserStatsParams) {
   }
 }
 
+// GET USER ANSWERS FOR PROFILE DETAIL PAGE
+export async function getUserAnswers(params: GetUserStatsParams) {
+  try {
+    // Connect to the database:
+    await connectToDatabase();
+
+    // We have to destructure the needed params:
+    const { userId, page = 1, pageSize = 10 } = params;
+
+    // Get the user's total number of questions:
+    const totalAnswers = await Answer.countDocuments({ author: userId });
+
+    // Get all the user's questions:
+    const userAnswers = await Answer.find({ author: userId })
+      .sort({ upvotes: -1 }) // Sort the questions by views and upvotes in descending order
+      .populate("question", "_id title") // Populate the answers with the question. We want to populate the question with the _id and title
+      .populate("author", "_id clerkId name picture"); // Populate the questions with the author. We want to populate the author with the _id, clerkId, name and picture
+
+    // Return the user's questions:
+    return { answers: userAnswers, totalAnswers };
+  } catch (error) {
+    console.log(error);
+    throw error;
+  }
+}
+
 // export async function getAllUsers(params: GetAllUsersParams) {
 //   try {
 //     // Connect to the database:

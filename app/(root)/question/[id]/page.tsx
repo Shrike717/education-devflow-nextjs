@@ -46,11 +46,11 @@ const Page = async ({ params }) => {
             <Votes
               type="Question" // Is this a question or an answer?
               itemId={JSON.stringify(result._id)} // The id of the question or answer
-              userId={JSON.stringify(mongoUser._id)} // The id of the user
+              userId={JSON.stringify(mongoUser?._id)} // The id of the user
               upvotes={result.upvotes.length} // The number of total upvotes
-              hasupVoted={result.upvotes.includes(mongoUser._id)} // If the user has upvoted his Id will be in the upvotes array
+              hasupVoted={result.upvotes.includes(mongoUser?._id)} // If the user has upvoted his Id will be in the upvotes array
               downvotes={result.downvotes.length} // The number of total downvotes
-              hasdownVoted={result.downvotes.includes(mongoUser._id)} // If the user has downvoted his Id will be in the downvotes array
+              hasdownVoted={result.downvotes.includes(mongoUser?._id)} // If the user has downvoted his Id will be in the downvotes array
               hasSaved={mongoUser?.saved.includes(result._id)} // If the user has saved question or answer his Id will be in the saved array
             />
           </div>
@@ -103,14 +103,14 @@ const Page = async ({ params }) => {
       {/* Displaying all answers for this question */}
       <AllAnswers
         questionId={result._id}
-        userId={mongoUser._id}
+        userId={mongoUser?._id}
         totalAnswers={result.answers.length}
       />
 
       <Answer
         question={result.content}
         questionId={JSON.stringify(result._id)}
-        authorId={JSON.stringify(mongoUser._id)}
+        authorId={JSON.stringify(mongoUser?._id)}
       />
     </>
   );
