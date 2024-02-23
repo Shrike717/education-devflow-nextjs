@@ -5,11 +5,13 @@ import { connectToDatabase } from "../mongoose";
 import {
   AnswerVoteParams,
   CreateAnswerParams,
+  DeleteAnswerParams,
   GetAnswersParams,
 } from "./shared.types";
 import Question from "@/database/question.model";
 import { revalidatePath } from "next/cache";
 import User from "@/database/user.model";
+import Interaction from "@/database/interaction.model";
 
 export async function createAnswer(params: CreateAnswerParams) {
   try {
@@ -155,6 +157,41 @@ export async function getAnswers(params: GetAnswersParams) {
       .sort({ createdAt: -1 });
 
     return { answers };
+  } catch (error) {
+    console.log(error);
+    throw error;
+  }
+}
+
+export async function deleteAnswer(params: DeleteAnswerParams) {
+  try {
+    // Connect to the database:
+    await connectToDatabase();
+
+    // Then we have to destructure the params:
+    const { answerId, path } = params; // path is URL that has to be reloaded after the answer is deleted. Next has to know that something has changed.
+
+    // First we have to find the answer. Why? To remove its existence from everywhere else.
+    const answer = await Answer.findById(answerId);
+
+    if (!answer) {
+      throw new Error("Answer not found");
+    }
+
+    // Then we have to delete the answer
+    await Answer.deleteOne({ _id: answerId });
+
+    // Then we want to update the question to n longer include references to the deleted answer:
+    await Question.updateMany(
+      { _id: answer.question }, // Which answer
+      { $pull: { answers: answerId } } // Remove the answer from the questions array
+    );
+
+    // Then we have to delete all interactions that belong to the question:
+    await Interaction.deleteMany({ answer: answerId });
+
+    // Finally we have to revalidate the path so that the frontend UI actually shows the updated questions:
+    revalidatePath(path);
   } catch (error) {
     console.log(error);
     throw error;

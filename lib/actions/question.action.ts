@@ -4,6 +4,7 @@ import Question from "@/database/question.model";
 import { connectToDatabase } from "../mongoose";
 import {
   CreateQuestionParams,
+  DeleteQuestionParams,
   GetQuestionByIdParams,
   GetQuestionsParams,
   QuestionVoteParams,
@@ -11,6 +12,8 @@ import {
 import Tag from "@/database/tag.model";
 import User from "@/database/user.model";
 import { revalidatePath } from "next/cache";
+import Answer from "@/database/answer.model";
+import Interaction from "@/database/interaction.model";
 
 // Here we have all the actions for the questions model:
 
@@ -98,6 +101,35 @@ export async function createQuestion(params: CreateQuestionParams) {
     // And  then we want to increment authors reputation by 5 points for creating a question:
 
     // This mechanism shows the new question without reloading the homepage:
+    revalidatePath(path);
+  } catch (error) {
+    console.log(error);
+    throw error;
+  }
+}
+
+export async function deleteQuestion(params: DeleteQuestionParams) {
+  try {
+    // Connect to the database:
+    await connectToDatabase();
+
+    // Then we have to destructure the params:
+    const { questionId, path } = params; // path is URL that has to be reloaded after the question is deleted. Next has to know that something has changed.
+
+    // We have to delete the question:
+    await Question.deleteOne({ _id: questionId });
+    // Then we have to delete all answers that belong to the question:
+    await Answer.deleteMany({ question: questionId });
+    // Then we have to delete all interactions that belong to the question:
+    await Interaction.deleteMany({ question: questionId });
+
+    // Then we want to update thhe tags to n longer include references to the deleted question:
+    await Tag.updateMany(
+      { questions: questionId }, // Which question
+      { $pull: { questions: questionId } } // Remove the question from the questions array
+    );
+
+    // Finally we have to revalidate the path so that the frontend UI actually shows the updated questions:
     revalidatePath(path);
   } catch (error) {
     console.log(error);
