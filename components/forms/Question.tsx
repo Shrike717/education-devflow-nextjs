@@ -21,19 +21,21 @@ import { Editor as TinyMCEEditor } from "@tinymce/tinymce-react";
 import { Editor } from "tinymce";
 import { Badge } from "../ui/badge";
 import Image from "next/image";
-import { createQuestion } from "@/lib/actions/question.action";
+import { createQuestion, editQuestion } from "@/lib/actions/question.action";
 import { useRouter, usePathname } from "next/navigation";
 import { useTheme } from "@/context/ThemeProvider";
 
-// Variable, seting the type of the question button
-const type: any = "create";
+// Variable, seting the type of the question button. This was mocked in the beginning.
+// const type: any = "create";
 
 // Props interface
 interface Props {
-  mongoUser: string;
+  type?: string;
+  mongoUserId: string;
+  questionDetails?: string;
 }
 
-const Question = ({ mongoUser }: Props) => {
+const Question = ({ type, mongoUserId, questionDetails }: Props) => {
   // Here we use the mode ccntext to  show editor dark skin in dark mode
   const { mode } = useTheme();
 
@@ -47,13 +49,19 @@ const Question = ({ mongoUser }: Props) => {
   // Here we initialize the hook for the editor
   const editorRef = useRef<Editor | null>(null); // With this we can access the editor values
 
+  // Here we parse the questionDetails from JSON to prepopulate the form
+  const parsedQuestionDetails = JSON.parse(questionDetails || "");
+
+  // Here we extract the tags from the questionDetails to then show them below the tags input field
+  const groupedTags = parsedQuestionDetails.tags.map((tag) => tag.name);
+
   // Zod 1. Define your form.
   const form = useForm<z.infer<typeof QuestionsSchema>>({
     resolver: zodResolver(QuestionsSchema),
     defaultValues: {
-      title: "",
-      explanation: "",
-      tags: [],
+      title: parsedQuestionDetails.title || "",
+      explanation: parsedQuestionDetails.content || "",
+      tags: groupedTags || [],
     },
   });
 
@@ -66,19 +74,30 @@ const Question = ({ mongoUser }: Props) => {
 
     // Here we can make two things: Create a new question or edit an existing one
     try {
-      // We mak an async call to the backend -> createQuestion
-      // We need to pass the values from the form to the backend
-
-      await createQuestion({
-        title: values.title,
-        content: values.explanation,
-        tags: values.tags,
-        author: JSON.parse(mongoUser),
-        path: pathname,
-      });
-
-      // Redirect to Homepage after the question was created
-      router.push("/");
+      if (type === "edit") {
+        // We make an async call to the backend -> editQuestion
+        // We need to pass the values from the form to the backend
+        await editQuestion({
+          questionId: parsedQuestionDetails._id,
+          title: values.title,
+          content: values.explanation,
+          path: pathname,
+        });
+        // Redirect to Question Detail Page after the question was edited
+        router.push(`/question/${parsedQuestionDetails._id}`);
+      } else {
+        // We mak an async call to the backend -> createQuestion
+        // We need to pass the values from the form to the backend
+        await createQuestion({
+          title: values.title,
+          content: values.explanation,
+          tags: values.tags,
+          author: JSON.parse(mongoUserId),
+          path: pathname,
+        });
+        // Redirect to Homepage after the question was created
+        router.push("/");
+      }
     } catch (error) {
       console.error("Error creating question:", error);
     } finally {
@@ -180,7 +199,7 @@ const Question = ({ mongoUser }: Props) => {
                 <TinyMCEEditor
                   apiKey={process.env.NEXT_PUBLIC_TINY_EDITOR_API_KEY}
                   onInit={(evt, editor) => (editorRef.current = editor)}
-                  initialValue=""
+                  initialValue={parsedQuestionDetails.content || ""} // Here we prepopulate the editor with the content of the question
                   // Witth the following two lines we can access the values of the editor
                   onBlur={field.onBlur}
                   onEditorChange={(content) => field.onChange(content)}
@@ -236,6 +255,7 @@ const Question = ({ mongoUser }: Props) => {
               <FormControl className="mt-3.5">
                 <>
                   <Input
+                    disabled={type === "edit"}
                     className="no-focus paragraph-regular background-light900_dark300 light-border-2 text-dark300_light700 min-h-[56px] border"
                     placeholder="Add tags..."
                     onKeyDown={(e) => handleInputKeyDown(e, field)}
@@ -248,16 +268,22 @@ const Question = ({ mongoUser }: Props) => {
                         <Badge
                           key={tag}
                           className="subtle-medium background-light800_dark300 text-light400_light500 flex items-center justify-center gap-2 rounded-md border-none px-4 py-2 capitalize"
-                          onClick={() => handleTagRemove(tag, field)}
+                          onClick={() =>
+                            type !== "edit"
+                              ? handleTagRemove(tag, field)
+                              : () => {}
+                          }
                         >
                           {tag}
-                          <Image
-                            src="/assets/icons/close.svg"
-                            alt="Close icon"
-                            width={12}
-                            height={12}
-                            className="cursor-pointer object-contain invert-0 dark:invert"
-                          />
+                          {type !== "edit" && ( // If the type is not edit, then we show the close icon
+                            <Image
+                              src="/assets/icons/close.svg"
+                              alt="Close icon"
+                              width={12}
+                              height={12}
+                              className="cursor-pointer object-contain invert-0 dark:invert"
+                            />
+                          )}
                         </Badge>
                       ))}
                     </div>

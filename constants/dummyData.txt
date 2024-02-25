@@ -15,7 +15,8 @@ Answer 01:
 Content:
 You can use the `required` property in the Mongoose Schema to enforce validation for the 'title' and 'content' fields. Here's an example of how you can define the Schema with validation:
 
-```javascript
+Tags:
+javascript
 
 
 Question 02:
@@ -46,7 +47,7 @@ Content:
 Seeking recommendations on securing a Node.js Express API. Interested in best practices, tools, and techniques to ensure the security of my application. If you have experience with securing Express APIs, please share your insights. Thanks!
 
 Tags:
-node.js,
+node.js
 express
 security
 

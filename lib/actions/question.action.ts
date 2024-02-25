@@ -5,6 +5,7 @@ import { connectToDatabase } from "../mongoose";
 import {
   CreateQuestionParams,
   DeleteQuestionParams,
+  EditQuestionParams,
   GetQuestionByIdParams,
   GetQuestionsParams,
   QuestionVoteParams,
@@ -101,6 +102,37 @@ export async function createQuestion(params: CreateQuestionParams) {
     // And  then we want to increment authors reputation by 5 points for creating a question:
 
     // This mechanism shows the new question without reloading the homepage:
+    revalidatePath(path);
+  } catch (error) {
+    console.log(error);
+    throw error;
+  }
+}
+
+export async function editQuestion(params: EditQuestionParams) {
+  try {
+    // Connect to the database:
+    await connectToDatabase();
+
+    // Then we have to destructure the params:
+    const { questionId, title, content, path } = params;
+
+    // Then we need to find the question thatt has to be edited:
+    const question = await Question.findById(questionId).populate("tags");
+
+    if (!question) {
+      throw new Error("Question not found");
+    }
+
+    // Then we have to update the question:
+    question.title = title;
+    question.content = content;
+    // We can not update tags. This is a limitation of the current implementation. We have to delete the question and create a new one with the new tags.
+
+    // Finally we save the question:
+    await question.save();
+
+    // Then we revalidate the path so that the frontend UI actually shows the updated question:
     revalidatePath(path);
   } catch (error) {
     console.log(error);
