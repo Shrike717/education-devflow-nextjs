@@ -50,17 +50,18 @@ const Question = ({ type, mongoUserId, questionDetails }: Props) => {
   const editorRef = useRef<Editor | null>(null); // With this we can access the editor values
 
   // Here we parse the questionDetails from JSON to prepopulate the form
-  const parsedQuestionDetails = JSON.parse(questionDetails || "");
+  const parsedQuestionDetails =
+    questionDetails && JSON.parse(questionDetails || "");
 
   // Here we extract the tags from the questionDetails to then show them below the tags input field
-  const groupedTags = parsedQuestionDetails.tags.map((tag) => tag.name);
+  const groupedTags = parsedQuestionDetails?.tags.map((tag) => tag.name);
 
   // Zod 1. Define your form.
   const form = useForm<z.infer<typeof QuestionsSchema>>({
     resolver: zodResolver(QuestionsSchema),
     defaultValues: {
-      title: parsedQuestionDetails.title || "",
-      explanation: parsedQuestionDetails.content || "",
+      title: parsedQuestionDetails?.title || "",
+      explanation: parsedQuestionDetails?.content || "",
       tags: groupedTags || [],
     },
   });
@@ -199,7 +200,7 @@ const Question = ({ type, mongoUserId, questionDetails }: Props) => {
                 <TinyMCEEditor
                   apiKey={process.env.NEXT_PUBLIC_TINY_EDITOR_API_KEY}
                   onInit={(evt, editor) => (editorRef.current = editor)}
-                  initialValue={parsedQuestionDetails.content || ""} // Here we prepopulate the editor with the content of the question
+                  initialValue={parsedQuestionDetails?.content || ""} // Here we prepopulate the editor with the content of the question
                   // Witth the following two lines we can access the values of the editor
                   onBlur={field.onBlur}
                   onEditorChange={(content) => field.onChange(content)}
