@@ -2,32 +2,11 @@ import Image from "next/image";
 import Link from "next/link";
 import React from "react";
 import RenderTag from "./RenderTag";
+import { getHotQuestions } from "@/lib/actions/question.action";
 
-const RightSidebar = () => {
-  // Fake questions
-  const hotQuestions = [
-    {
-      _id: "1",
-      title: "I want to use Next.js for my new project. How can I use it?",
-    },
-    {
-      _id: "2",
-      title: "How can I set up a new Next.js project on my local machine?",
-    },
-    {
-      _id: "3",
-      title:
-        "What are the key features of Next.js that make it suitable for my project?",
-    },
-    {
-      _id: "4",
-      title: "How can I create dynamic routes in Next.js?",
-    },
-    {
-      _id: "5",
-      title: "What is the recommended way to fetch data in Next.js?",
-    },
-  ];
+const RightSidebar = async () => {
+  // We get the hot questions from the database
+  const hotQuestions = await getHotQuestions();
 
   // Fake tags
   const popularTags = [
@@ -46,7 +25,7 @@ const RightSidebar = () => {
           {hotQuestions.map((question) => (
             <Link
               key={question._id}
-              href={`/questions/${question._id}`}
+              href={`/question/${question._id}`}
               className="flex cursor-pointer items-center justify-between gap-7"
             >
               <p className="body-medium text-dark500_light700">

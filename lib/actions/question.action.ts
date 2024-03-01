@@ -169,6 +169,24 @@ export async function deleteQuestion(params: DeleteQuestionParams) {
   }
 }
 
+export async function getHotQuestions() {
+  try {
+    // Connect to the database:
+    await connectToDatabase();
+
+    // We find hot questins based on views and upvotes:
+    const hotQuestions = await Question.find()
+      .sort({ views: -1, upvotes: -1 }) // We sort the questions by views and upvotes in descending order.
+      .limit(5);
+
+    // Then we return the hot questions:
+    return hotQuestions;
+  } catch (error) {
+    console.log(error);
+    throw error;
+  }
+}
+
 // VOTING ACTIONS:
 
 // We need to know: Who voted? What was voted? And on what question did they vote?
