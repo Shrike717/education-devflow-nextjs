@@ -22,7 +22,23 @@ export async function getQuestions(params: GetQuestionsParams) {
   try {
     connectToDatabase();
 
-    const questions = await Question.find({})
+    // We have to destructure the params to get the searchQuery:
+    const { searchQuery } = params;
+
+    // Then we have to declare the searchQuery:
+    // The type FilterQuery is coming from mongoose. It allows us to filter the questions.
+    const query: FilterQuery<typeof Question> = {}; // The query is empty by default.
+
+    // If we have a searchQuery we have to filter the questions. Here we use the $or operator to find the searchQuery in the title and content of the question:
+    if (searchQuery) {
+      query.$or = [
+        // We want to search for the searchQuery in the title and content of the question:
+        { title: { $regex: new RegExp(searchQuery, "i") } }, // i means case insensitive. We want to find the searchQuery in the title.
+        { content: { $regex: new RegExp(searchQuery, "i") } }, // We want to find the searchQuery in the content.
+      ];
+    }
+
+    const questions = await Question.find(query) // We find the questions based on the query.
       .populate({ path: "tags", model: Tag }) // We populate all tag properties to the question.
       .populate({ path: "author", model: User }) // We populate all user properties to the question.
       .sort({ createdAt: -1 }); // We sort the questions by createdAt in descending order.
