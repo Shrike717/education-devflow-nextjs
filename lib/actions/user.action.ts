@@ -216,7 +216,7 @@ export async function getSavedQuestions(params: GetSavedQuestionsParams) {
     await connectToDatabase();
 
     // We have to destructure the needed params:
-    const { clerkId, page = 1, pageSize = 10, filter, searchQuery } = params;
+    const { clerkId, searchQuery } = params;
 
     // We define the query object to filter the saved questions:
     // In Typescript: query of type FilterQuery<typeof Question> = searchQuery
