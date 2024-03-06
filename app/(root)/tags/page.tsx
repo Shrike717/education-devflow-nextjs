@@ -3,12 +3,17 @@ import NoResult from "@/components/shared/NoResult";
 import LocalSearchbar from "@/components/shared/search/LocalSearchbar";
 import { UserFilters } from "@/constants/filters";
 import { getAllTags } from "@/lib/actions/tag.action";
+import { SearchParamsProps } from "@/types";
 
 import Link from "next/link";
 
-const Page = async (): Promise<JSX.Element> => {
+const Page = async ({
+  searchParams,
+}: SearchParamsProps): Promise<JSX.Element> => {
   // Fetching all tags from the database. Therefore component is async:
-  const result = await getAllTags({});
+  const result = await getAllTags({
+    searchQuery: searchParams.q,
+  });
 
   return (
     <>
@@ -20,7 +25,7 @@ const Page = async (): Promise<JSX.Element> => {
           route="/tags"
           iconPosition="left"
           imgSrc="/assets/icons/search.svg"
-          placeholder="Search for amazing minds"
+          placeholder="Search for tags"
           otherClasses="flex-1"
         />
         {/* Reusable Compnent Filter Select */}

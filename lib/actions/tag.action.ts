@@ -9,6 +9,7 @@ import {
 } from "./shared.types";
 import Tag, { ITag } from "@/database/tag.model";
 import Question from "@/database/question.model";
+import { FilterQuery } from "mongoose";
 
 interface Tag {
   _id: string;
@@ -57,7 +58,18 @@ export async function getAllTags(
     // Connect to the database:
     await connectToDatabase();
 
-    const tags = await Tag.find();
+    // Then we have to destructure the params:
+    const { searchQuery } = params;
+
+    // Teh we define the query object to filter the tags:
+    const query: FilterQuery<typeof Tag> = {}; // Here we declare the query object to filter the tags
+
+    // If there is a searchQuery, we want to filter the tags by the name:
+    if (searchQuery) {
+      query.$or = [{ name: { $regex: new RegExp(searchQuery, "i") } }]; // We use the $regex operator to match the name with the searchQuery. The $options "i" makes the search case insensitive.
+    }
+
+    const tags = await Tag.find(query);
 
     return { tags };
   } catch (error) {
@@ -118,7 +130,7 @@ export async function getTopPopularTags() {
     // Connect to the database:
     await connectToDatabase();
 
-    // We get the top popular tags from the database:
+    // We get the top popular tags from the database. We use the aggregate method to get the top popular tags:
     const popularTags = await Tag.aggregate([
       { $project: { name: 1, numberOfQuestions: { $size: "$questions" } } },
       { $sort: { numberOfQuestions: -1 } },
