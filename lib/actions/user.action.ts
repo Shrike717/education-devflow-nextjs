@@ -137,11 +137,23 @@ export async function getAllUsers(
     // Connect to the database:
     await connectToDatabase();
 
-    // Then we have to destructure the params.
-    // If the params are not provided, we set the default values:
-    // const { page = 1, pageSize = 20, filter, searchQuery } = params;
+    // We have to destructure the params to get the searchQuery:
+    const { searchQuery } = params;
 
-    const users = await User.find({}).sort({ createdAt: -1 });
+    // Then we have to declare the searchQuery:
+    // The type FilterQuery is coming from mongoose. It allows us to filter the users.
+    const query: FilterQuery<typeof User> = {}; // The query is empty by default.
+
+    // If we have a searchQuery we have to filter the users. Here we use the $or operator to find the searchQuery in the name and username of the user:
+    if (searchQuery) {
+      query.$or = [
+        // We want to search for the searchQuery in the title and content of the question:
+        { name: { $regex: new RegExp(searchQuery, "i") } }, // i means case insensitive. We want to find the searchQuery in the name.
+        { username: { $regex: new RegExp(searchQuery, "i") } }, // i means case insensitive. We want to find the searchQuery in the username.
+      ];
+    }
+
+    const users = await User.find(query).sort({ createdAt: -1 });
 
     // Return the users:
     return { users };

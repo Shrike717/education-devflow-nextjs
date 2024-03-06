@@ -3,11 +3,16 @@ import Filter from "@/components/shared/Filter";
 import LocalSearchbar from "@/components/shared/search/LocalSearchbar";
 import { UserFilters } from "@/constants/filters";
 import { getAllUsers } from "@/lib/actions/user.action";
+import { SearchParamsProps } from "@/types";
 import Link from "next/link";
 
-const Page = async (): Promise<JSX.Element> => {
+const Page = async ({
+  searchParams,
+}: SearchParamsProps): Promise<JSX.Element> => {
   // Fetching all users from the database. Therefore component is async:
-  const result = await getAllUsers({});
+  const result = await getAllUsers({
+    searchQuery: searchParams.q,
+  });
 
   return (
     <>
