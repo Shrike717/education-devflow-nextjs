@@ -23,7 +23,7 @@ export async function getQuestions(params: GetQuestionsParams) {
     connectToDatabase();
 
     // We have to destructure the params to get the searchQuery:
-    const { searchQuery } = params;
+    const { searchQuery, filter } = params;
 
     // Then we have to declare the searchQuery:
     // The type FilterQuery is coming from mongoose. It allows us to filter the questions.
@@ -38,10 +38,29 @@ export async function getQuestions(params: GetQuestionsParams) {
       ];
     }
 
+    // If we have a filter we have to filter the questions by the filter:
+    let sortOptions = {};
+
+    // Then we set a sswitch statement to filter the questions by the filter:
+    switch (filter) {
+      case "newest":
+        sortOptions = { createdAt: -1 }; // We want to sort the questions by createdAt in descending order to get the newest questions first.
+        break;
+      case "frequent":
+        sortOptions = { views: -1 }; // Here we want to get the questions with the most views first. With al lot of activity.
+        break;
+      case "unanswered":
+        query.answers = { $size: 0 }; // We want to find questions that have no answers.
+        break;
+
+      default:
+        break;
+    }
+
     const questions = await Question.find(query) // We find the questions based on the query.
       .populate({ path: "tags", model: Tag }) // We populate all tag properties to the question.
       .populate({ path: "author", model: User }) // We populate all user properties to the question.
-      .sort({ createdAt: -1 }); // We sort the questions by createdAt in descending order.
+      .sort(sortOptions); // We sort the questions based on the sortOptions.
 
     return { questions };
   } catch (error) {

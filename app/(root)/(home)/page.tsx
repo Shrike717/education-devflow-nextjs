@@ -15,9 +15,10 @@ export default async function Home({
   // Fetching all questions from the database:
   const result = await getQuestions({
     searchQuery: searchParams.q,
+    filter: searchParams.filter,
   });
 
-  //   console.log("[Homepage] result:", result.questions);
+  // Todo:  Fetch recommended questions
 
   return (
     <>
