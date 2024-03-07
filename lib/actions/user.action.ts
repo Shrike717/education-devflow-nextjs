@@ -138,7 +138,7 @@ export async function getAllUsers(
     await connectToDatabase();
 
     // We have to destructure the params to get the searchQuery:
-    const { searchQuery } = params;
+    const { searchQuery, filter } = params;
 
     // Then we have to declare the searchQuery:
     // The type FilterQuery is coming from mongoose. It allows us to filter the users.
@@ -153,7 +153,26 @@ export async function getAllUsers(
       ];
     }
 
-    const users = await User.find(query).sort({ createdAt: -1 });
+    // If we have a filter we have to filter the users by the filter. We initialize the sortOptions object:
+    let sortOptions = {};
+
+    // Then setting the switch statement for the filter:
+    switch (filter) {
+      case "new_users":
+        sortOptions = { joinedAt: -1 }; // Sort the users by createdAt in descending order
+        break;
+      case "old_users":
+        sortOptions = { joinedAt: 1 }; // Sort the users by createdAt in ascending order
+        break;
+      case "top_contributors":
+        sortOptions = { reputation: -1 }; // Sort the users by reputation in descending order
+        break;
+
+      default:
+        break;
+    }
+
+    const users = await User.find(query).sort(sortOptions); // We want to find the users by the query and sort them by the sortOptions
 
     // Return the users:
     return { users };

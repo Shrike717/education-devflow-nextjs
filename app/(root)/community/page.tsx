@@ -12,6 +12,7 @@ const Page = async ({
   // Fetching all users from the database. Therefore component is async:
   const result = await getAllUsers({
     searchQuery: searchParams.q,
+    filter: searchParams.filter,
   });
 
   return (
