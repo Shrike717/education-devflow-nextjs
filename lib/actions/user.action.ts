@@ -235,7 +235,7 @@ export async function getSavedQuestions(params: GetSavedQuestionsParams) {
     await connectToDatabase();
 
     // We have to destructure the needed params:
-    const { clerkId, searchQuery } = params;
+    const { clerkId, searchQuery, filter } = params;
 
     // We define the query object to filter the saved questions:
     // In Typescript: query of type FilterQuery<typeof Question> = searchQuery
@@ -243,12 +243,37 @@ export async function getSavedQuestions(params: GetSavedQuestionsParams) {
       ? { title: { $regex: new RegExp(searchQuery, "i") } } // We want to filter the saved questions by the title. We use the $regex operator to match the title with the searchQuery. The $options "i" makes the search case insensitive.
       : {}; // If there is no searchQuery, we return an empty object
 
+    // If we have a filter we have to filter the questions by the filter. We initialize the sortOptions object:
+    let sortOptions = {};
+
+    // Then setting the switch statement for the filter:
+    switch (filter) {
+      case "most_recent":
+        sortOptions = { createdAt: -1 }; // Sort the questions by createdAt in descending order
+        break;
+      case "oldest":
+        sortOptions = { createdAt: 1 }; // Sort the questions by createdAt in ascending order
+        break;
+      case "most_voted":
+        sortOptions = { upvotes: -1 }; // Sort the questions by upvotes in descending order
+        break;
+      case "most_viewed":
+        sortOptions = { views: -1 }; // Sort the questions by views in descending order
+        break;
+      case "most_answered":
+        sortOptions = { answers: -1 }; // Sort the questions by answers in descending order
+        break;
+
+      default:
+        break;
+    }
+
     // Get the user:
     const user = await User.findOne({ clerkId }).populate({
-      path: "saved",
+      path: "saved", // We want to populate the saved questions
       match: query, // We want to match the saved questions with the query
       options: {
-        sort: { createdAt: -1 }, // Sort the saved questions by createdAt in descending order
+        sort: sortOptions, // Sort the saved questions by the sortOptions
       },
 
       populate: [
