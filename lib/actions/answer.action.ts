@@ -146,7 +146,29 @@ export async function getAnswers(params: GetAnswersParams) {
     connectToDatabase();
 
     // We need to destructure the questionId from the params object for which we want to get the answers.
-    const { questionId } = params;
+    const { questionId, sortBy } = params;
+
+    // If we have a filter we have to filter the answers by the filter. We initialize the sortOptions object:
+    let sortOptions = {};
+
+    // Then setting the switch statement for the filter:
+    switch (sortBy) {
+      case "highestUpvotes":
+        sortOptions = { upvotes: -1 }; // Sort the answers by upvotes in descending order
+        break;
+      case "lowestUpvotes":
+        sortOptions = { upvotes: 1 }; // Sort the answers by upvotes in ascending order
+        break;
+      case "recent":
+        sortOptions = { createdAt: -1 }; // Sort the answers by createdAt in descending order
+        break;
+      case "old":
+        sortOptions = { createdAt: 1 }; // Sort the answers by createdAt in ascending order
+        break;
+
+      default:
+        break;
+    }
 
     const answers = await Answer.find({ question: questionId })
       .populate({
@@ -154,7 +176,7 @@ export async function getAnswers(params: GetAnswersParams) {
         model: User,
         select: "_id clerkId name picture",
       })
-      .sort({ createdAt: -1 });
+      .sort(sortOptions);
 
     return { answers };
   } catch (error) {

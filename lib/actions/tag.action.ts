@@ -59,7 +59,7 @@ export async function getAllTags(
     await connectToDatabase();
 
     // Then we have to destructure the params:
-    const { searchQuery } = params;
+    const { searchQuery, filter } = params;
 
     // Teh we define the query object to filter the tags:
     const query: FilterQuery<typeof Tag> = {}; // Here we declare the query object to filter the tags
@@ -69,7 +69,29 @@ export async function getAllTags(
       query.$or = [{ name: { $regex: new RegExp(searchQuery, "i") } }]; // We use the $regex operator to match the name with the searchQuery. The $options "i" makes the search case insensitive.
     }
 
-    const tags = await Tag.find(query);
+    // If we have a filter we have to filter the questions by the filter. We initialize the sortOptions object:
+    let sortOptions = {};
+
+    // Then setting the switch statement for the filter:
+    switch (filter) {
+      case "popular":
+        sortOptions = { questions: -1 }; // Sort the tags with the most questions in descending order
+        break;
+      case "recent":
+        sortOptions = { createdAt: -1 }; // Sort the tags by createdAt in descending order
+        break;
+      case "name":
+        sortOptions = { name: 1 }; // Sort the tags by name in ascending order
+        break;
+      case "old":
+        sortOptions = { createdAt: 1 }; // Sort the tags by createdAt in ascending order
+        break;
+
+      default:
+        break;
+    }
+
+    const tags = await Tag.find(query).sort(sortOptions);
 
     return { tags };
   } catch (error) {

@@ -26,6 +26,8 @@ const AllAnswers = async ({
   // First we have to fetch all the answers for this question
   const result = await getAnswers({
     questionId,
+    page: page ? +page : 1, // +page: We are converting the page to a number
+    sortBy: filter,
   });
 
   //   console.log("[AllAnswers] result", result.answers);
