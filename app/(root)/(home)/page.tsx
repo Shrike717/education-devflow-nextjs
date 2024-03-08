@@ -2,6 +2,7 @@ import QuestionCard from "@/components/cards/QuestionCard";
 import HomeFilters from "@/components/home/HomeFilters";
 import Filter from "@/components/shared/Filter";
 import NoResult from "@/components/shared/NoResult";
+import Pagination from "@/components/shared/Pagination";
 import LocalSearchbar from "@/components/shared/search/LocalSearchbar";
 import { Button } from "@/components/ui/button";
 import { HomePageFilters } from "@/constants/filters";
@@ -79,6 +80,14 @@ export default async function Home({
             linkTitle="Ask a Question"
           />
         )}
+      </div>
+
+      {/* Here is the Pagination component */}
+      <div className="mt-10">
+        <Pagination
+          pageNumber={searchParams.page ? +searchParams.page : 1} // The page number is taken from the URL query parameter. If it's not there, the default value is 1.
+          isNext={result.isNext} // The isNext prop is taken from the result object. It's a boolean value that tells us if there are more questions to show.
+        />
       </div>
     </>
   );

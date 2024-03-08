@@ -55,7 +55,7 @@ const LocalSearchbar = ({
           });
 
           // Then we want to push the new URL to the router:
-          router.push(newUrl, { scroll: false });
+          router.push(newUrl, { scroll: false }); // { scroll: false } is used to prevent the page from scrolling to the top
         }
       }
 
