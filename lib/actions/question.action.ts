@@ -23,9 +23,12 @@ export async function getQuestions(params: GetQuestionsParams) {
     connectToDatabase();
 
     // We have to destructure the params to get the searchQuery:
-    const { searchQuery, filter } = params;
+    const { searchQuery, filter, page = 1, pageSize = 2 } = params;
 
-    // Then we have to declare the searchQuery:
+    // Pagination: First we have to calculate the number of documents to skip based on the page number and the page size:
+    const skipAmount = (page - 1) * pageSize; // Example: If we are on page 2 and the page size is 20, we have to skip 20 documents. (20 * (2 - 1) = 20 * 1 = 20)
+
+    // searchQuery: we have to declare the searchQuery:
     // The type FilterQuery is coming from mongoose. It allows us to filter the questions.
     const query: FilterQuery<typeof Question> = {}; // The query is empty by default.
 
@@ -60,9 +63,20 @@ export async function getQuestions(params: GetQuestionsParams) {
     const questions = await Question.find(query) // We find the questions based on the query.
       .populate({ path: "tags", model: Tag }) // We populate all tag properties to the question.
       .populate({ path: "author", model: User }) // We populate all user properties to the question.
+      .skip(skipAmount) // We skip the amount of documents based on the page number and the page size.
+      .limit(pageSize) // We limit the amount of documents based on the page size.
       .sort(sortOptions); // We sort the questions based on the sortOptions.
 
-    return { questions };
+    // Pagination: We have to calculate if there are more pages with questions to show:
+    const totalQuestions = await Question.countDocuments(query); // We count the total amount of questions based on the query.
+
+    // If the total amount of questions is greater than the amount of questions we have to show on the page, we have more pages with questions to show:
+    const isNext = totalQuestions > skipAmount + questions.length;
+
+    // Example1: If we have 100 questions and we are on page 4 with a page size of 20, we have 20 questions on the page and 20 * 4 = 80 questions on the previous pages. 80 + 20 = 100. We have no more questions to show.
+    // Example2: If we have 100 questions and we are on page 3 with a page size of 20, we have 20 questions on the page and 20 * 3 = 60 questions on the previous pages. 60 + 20 = 80. We have 20 more questions to show.
+
+    return { questions, isNext };
   } catch (error) {
     console.log(error);
     throw error;

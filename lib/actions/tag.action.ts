@@ -77,19 +77,22 @@ export async function getAllTags(
       case "popular":
         sortOptions = { questions: -1 }; // Sort the tags with the most questions in descending order
         break;
+
       case "recent":
-        sortOptions = { createdAt: -1 }; // Sort the tags by createdAt in descending order
+        sortOptions = { createdOn: -1 }; // Sort the tags by createdAt in descending order
         break;
       case "name":
         sortOptions = { name: 1 }; // Sort the tags by name in ascending order
         break;
       case "old":
-        sortOptions = { createdAt: 1 }; // Sort the tags by createdAt in ascending order
+        sortOptions = { createdOn: 1 }; // Sort the tags by createdAt in ascending order
         break;
 
       default:
         break;
     }
+
+    console.log("sortOptions", sortOptions);
 
     const tags = await Tag.find(query).sort(sortOptions);
 
