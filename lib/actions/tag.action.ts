@@ -59,7 +59,10 @@ export async function getAllTags(
     await connectToDatabase();
 
     // Then we have to destructure the params:
-    const { searchQuery, filter } = params;
+    const { searchQuery, filter, page = 1, pageSize = 10 } = params;
+
+    // Pagination: First we have to calculate the number of documents to skip based on the page number and the page size:
+    const skipAmount = (page - 1) * pageSize; // Example: If we are on page 2 and the page size is 20, we have to skip 20 documents. (20 * (2 - 1) = 20 * 1 = 20)
 
     // Teh we define the query object to filter the tags:
     const query: FilterQuery<typeof Tag> = {}; // Here we declare the query object to filter the tags
@@ -92,11 +95,18 @@ export async function getAllTags(
         break;
     }
 
-    console.log("sortOptions", sortOptions);
+    // Pagination: Here we have to get the total amount of tags:
+    const totalTags = await Tag.countDocuments(query);
 
-    const tags = await Tag.find(query).sort(sortOptions);
+    const tags = await Tag.find(query)
+      .skip(skipAmount) // We skip the documents based on the skipAmount
+      .limit(pageSize) // We limit the number of documents to pageSize
+      .sort(sortOptions);
 
-    return { tags };
+    // Pagination: If the total amount of documents is greater than the amount of questions we have to show on the page, we have more pages with questions to show:
+    const isNext = totalTags > skipAmount + tags.length;
+
+    return { tags, isNext };
   } catch (error) {
     console.log(error);
     throw error;
@@ -110,7 +120,10 @@ export async function getQuestionsByTagId(params: GetQuestionsByTagIdParams) {
     await connectToDatabase();
 
     // Then we have to destructure the params:
-    const { tagId, page = 1, pageSize = 10, searchQuery } = params;
+    const { tagId, searchQuery, page = 1, pageSize = 10 } = params;
+
+    // Pagination: First we have to calculate the number of documents to skip based on the page number and the page size:
+    const skipAmount = (page - 1) * pageSize; // Example: If we are on page 2 and the page size is 20, we have to skip 20 documents. (20 * (2 - 1) = 20 * 1 = 20)
 
     // We define the query object to filter the questions related to the tag:
     // In Typescript: query of type FilterQuery<typeof Question> = searchQuery
@@ -125,6 +138,8 @@ export async function getQuestionsByTagId(params: GetQuestionsByTagIdParams) {
         : {}, // If there is no searchQuery, we return an empty object
       options: {
         sort: { createdAt: -1 }, // Sort the questions by createdAt in descending order
+        skip: skipAmount, // We skip the documents based on the skipAmount
+        limit: pageSize, // We limit the number of documents to pageSize
       },
 
       populate: [
@@ -138,11 +153,14 @@ export async function getQuestionsByTagId(params: GetQuestionsByTagIdParams) {
       throw new Error("Tag not found");
     }
 
+    // Pagination: If the total amount of documents is greater than the amount of questions we have to show on the page, we have more pages with questions to show:
+    const isNext = tag.questions.length >= pageSize;
+
     // Here we have to extract the related questions from the tag:
     const questions = tag.questions;
 
     // Then we reeturn the saved questions:
-    return { tagTitle: tag.name, questions };
+    return { tagTitle: tag.name, questions, isNext };
   } catch (error) {
     console.log(error);
     throw error;

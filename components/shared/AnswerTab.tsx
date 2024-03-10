@@ -1,17 +1,18 @@
 import { getUserAnswers } from "@/lib/actions/user.action";
 import { SearchParamsProps } from "@/types";
 import AnswerCard from "../cards/AnswerCard";
+import Pagination from "./Pagination";
 
 interface Props extends SearchParamsProps {
   userId: string;
   clerkId?: string | null;
 }
 
-const AnswerTab = async ({ searchProps, userId, clerkId }: Props) => {
+const AnswerTab = async ({ searchParams, userId, clerkId }: Props) => {
   // Fetching the user's answers:
   const result = await getUserAnswers({
     userId,
-    page: 1,
+    page: searchParams.page ? +searchParams.page : 1, // The page number is taken from the URL query parameter. +searchParams.page is changing it to a number. If it's not there, the default value is 1.
   });
 
   return (
@@ -27,6 +28,14 @@ const AnswerTab = async ({ searchProps, userId, clerkId }: Props) => {
           createdAt={answer.createdAt}
         />
       ))}
+
+      {/* Pagination */}
+      <div className="mt-10">
+        <Pagination
+          pageNumber={searchParams.page ? +searchParams.page : 1} // The page number is taken from the URL query parameter. If it's not there, the default value is 1.
+          isNext={result.isNextAnswers} // The isNext prop is taken from the result object. It's a boolean value that tells us if there are more questions to show.
+        />
+      </div>
     </>
   );
 };

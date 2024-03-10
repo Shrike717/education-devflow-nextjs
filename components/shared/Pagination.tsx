@@ -32,6 +32,9 @@ const Pagination = ({ pageNumber, isNext }: Props) => {
     router.push(newUrl);
   };
 
+  // Conditional rendering of the Pagination component so that it is only shown when there are more than one page of documents to show.
+  if (pageNumber === 1 && !isNext) return null;
+
   return (
     <div className="flex w-full items-center justify-center gap-2">
       <Button

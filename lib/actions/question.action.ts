@@ -23,7 +23,7 @@ export async function getQuestions(params: GetQuestionsParams) {
     connectToDatabase();
 
     // We have to destructure the params to get the searchQuery:
-    const { searchQuery, filter, page = 1, pageSize = 2 } = params;
+    const { searchQuery, filter, page = 1, pageSize = 20 } = params;
 
     // Pagination: First we have to calculate the number of documents to skip based on the page number and the page size:
     const skipAmount = (page - 1) * pageSize; // Example: If we are on page 2 and the page size is 20, we have to skip 20 documents. (20 * (2 - 1) = 20 * 1 = 20)

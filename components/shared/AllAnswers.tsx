@@ -7,6 +7,7 @@ import Image from "next/image";
 import { getTimestamp } from "@/lib/utils";
 import ParseHTML from "./ParseHTML";
 import Votes from "./Votes";
+import Pagination from "./Pagination";
 
 interface Props {
   questionId: string;
@@ -26,7 +27,7 @@ const AllAnswers = async ({
   // First we have to fetch all the answers for this question
   const result = await getAnswers({
     questionId,
-    page: page ? +page : 1, // +page: We are converting the page to a number
+    page: page ? +page : 1, // The page number is coming through Props this time. +page is changing it to a number. If it's not there, the default value is 1.
     sortBy: filter,
   });
 
@@ -82,6 +83,14 @@ const AllAnswers = async ({
             <ParseHTML data={answer.content} />
           </article>
         ))}
+      </div>
+
+      {/* Pagination */}
+      <div className="mt-10 w-full">
+        <Pagination
+          pageNumber={page ? +page : 1} // The page number is taken from the URL query parameter. If it's not there, the default value is 1.
+          isNext={result.isNextAnswers} // The isNext prop is taken from the result object. It's a boolean value that tells us if there are more questions to show.
+        />
       </div>
     </div>
   );

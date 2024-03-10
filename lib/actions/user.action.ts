@@ -138,7 +138,10 @@ export async function getAllUsers(
     await connectToDatabase();
 
     // We have to destructure the params to get the searchQuery:
-    const { searchQuery, filter } = params;
+    const { searchQuery, filter, page = 1, pageSize = 10 } = params;
+
+    // Pagination: First we have to calculate the number of documents to skip based on the page number and the page size:
+    const skipAmount = (page - 1) * pageSize; // Example: If we are on page 2 and the page size is 10, we have to skip 10 documents.
 
     // Then we have to declare the searchQuery:
     // The type FilterQuery is coming from mongoose. It allows us to filter the users.
@@ -172,10 +175,19 @@ export async function getAllUsers(
         break;
     }
 
-    const users = await User.find(query).sort(sortOptions); // We want to find the users by the query and sort them by the sortOptions
+    const users = await User.find(query)
+      .skip(skipAmount) // We skip the amount of documents based on the page number and the page size.
+      .limit(pageSize) // We limit the amount of documents based on the page size.
+      .sort(sortOptions); // We want to find the users by the query and sort them by the sortOptions
+
+    // Pagination: We have to calculate if there are more pages with users to show:
+    const totalUsers = await User.countDocuments(query); // We count the total amount of questions based on the query.
+
+    // If the total amount of users is greater than the amount of users we have to show on the page, we have more pages with questions to show:
+    const isNext = totalUsers > skipAmount + users.length;
 
     // Return the users:
-    return { users };
+    return { users, isNext };
   } catch (error) {
     console.log(error);
     throw error;
@@ -235,7 +247,10 @@ export async function getSavedQuestions(params: GetSavedQuestionsParams) {
     await connectToDatabase();
 
     // We have to destructure the needed params:
-    const { clerkId, searchQuery, filter } = params;
+    const { clerkId, searchQuery, filter, page = 1, pageSize = 20 } = params;
+
+    // Pagination: First we have to calculate the number of documents to skip based on the page number and the page size:
+    const skipAmount = (page - 1) * pageSize; // Example: If we are on page 2 and the page size is 20, we have to skip 20 documents. (20 * (2 - 1) = 20 * 1 = 20)
 
     // We define the query object to filter the saved questions:
     // In Typescript: query of type FilterQuery<typeof Question> = searchQuery
@@ -274,6 +289,8 @@ export async function getSavedQuestions(params: GetSavedQuestionsParams) {
       match: query, // We want to match the saved questions with the query
       options: {
         sort: sortOptions, // Sort the saved questions by the sortOptions
+        skip: skipAmount, // We skip the amount of documents based on the page number and the page size.
+        limit: pageSize, // We limit the amount of documents based on the page size.
       },
 
       populate: [
@@ -283,6 +300,9 @@ export async function getSavedQuestions(params: GetSavedQuestionsParams) {
       ],
     });
 
+    // If the total amount of saved questions is greater than the amount of questions we have to show on the page, we have more pages with questions to show:
+    const isNext = user.saved.length >= pageSize;
+
     if (!user) {
       throw new Error("User not found");
     }
@@ -290,8 +310,8 @@ export async function getSavedQuestions(params: GetSavedQuestionsParams) {
     // We have to extract the saved questions from the user:
     const savedQuestions = user.saved;
 
-    // Then we reeturn the saved questions:
-    return { questions: savedQuestions };
+    // Then we return the saved questions:
+    return { questions: savedQuestions, isNext };
   } catch (error) {
     console.log(error);
     throw error;
@@ -334,7 +354,10 @@ export async function getUserQuestions(params: GetUserStatsParams) {
     await connectToDatabase();
 
     // We have to destructure the needed params:
-    const { userId, page = 1, pageSize = 10 } = params;
+    const { userId, page = 1, pageSize = 5 } = params;
+
+    // Pagination: First we have to calculate the number of documents to skip based on the page number and the page size:
+    const skipAmount = (page - 1) * pageSize; // Example: If we are on page 2 and the page size is 20, we have to skip 20 documents. (20 * (2 - 1) = 20 * 1 = 20)
 
     // Get the user's total number of questions:
     const totalQuestions = await Question.countDocuments({ author: userId });
@@ -342,11 +365,16 @@ export async function getUserQuestions(params: GetUserStatsParams) {
     // Get all the user's questions:
     const userQuestions = await Question.find({ author: userId })
       .sort({ views: -1, upvotes: -1 }) // Sort the questions by views and upvotes in descending order
+      .skip(skipAmount) // We skip the amount of documents based on the page number and the page size.
+      .limit(pageSize) // We limit the amount of documents based on the page size.
       .populate("tags", "_id name") // Populate the questions with the tags. We want to populate the tags with the _id and name
       .populate("author", "_id clerkId name picture"); // Populate the questions with the author. We want to populate the author with the _id, clerkId, name and picture
 
+    // If the total amount of questions is greater than the amount of questions we have to show on the page, we have more pages with questions to show:
+    const isNextQuestions = totalQuestions > skipAmount + userQuestions.length;
+
     // Return the user's questions:
-    return { questions: userQuestions, totalQuestions };
+    return { questions: userQuestions, totalQuestions, isNextQuestions };
   } catch (error) {
     console.log(error);
     throw error;
@@ -360,19 +388,27 @@ export async function getUserAnswers(params: GetUserStatsParams) {
     await connectToDatabase();
 
     // We have to destructure the needed params:
-    const { userId, page = 1, pageSize = 10 } = params;
+    const { userId, page = 1, pageSize = 5 } = params;
 
-    // Get the user's total number of questions:
+    // Pagination: First we have to calculate the number of documents to skip based on the page number and the page size:
+    const skipAmount = (page - 1) * pageSize; // Example: If we are on page 2 and the page size is 20, we have to skip 20 documents. (20 * (2 - 1) = 20 * 1 = 20)
+
+    // Get the user's total number of answers:
     const totalAnswers = await Answer.countDocuments({ author: userId });
 
-    // Get all the user's questions:
+    // Get all the user's answers:
     const userAnswers = await Answer.find({ author: userId })
       .sort({ upvotes: -1 }) // Sort the questions by views and upvotes in descending order
+      .skip(skipAmount) // We skip the amount of documents based on the page number and the page size.
+      .limit(pageSize) // We limit the amount of documents based on the page size.
       .populate("question", "_id title") // Populate the answers with the question. We want to populate the question with the _id and title
       .populate("author", "_id clerkId name picture"); // Populate the questions with the author. We want to populate the author with the _id, clerkId, name and picture
 
+    // If the total amount of answers is greater than the amount of answers we have to show on the page, we have more pages with answers to show:
+    const isNextAnswers = totalAnswers > skipAmount + userAnswers.length;
+
     // Return the user's questions:
-    return { answers: userAnswers, totalAnswers };
+    return { answers: userAnswers, totalAnswers, isNextAnswers };
   } catch (error) {
     console.log(error);
     throw error;

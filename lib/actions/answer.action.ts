@@ -146,7 +146,10 @@ export async function getAnswers(params: GetAnswersParams) {
     connectToDatabase();
 
     // We need to destructure the questionId from the params object for which we want to get the answers.
-    const { questionId, sortBy } = params;
+    const { questionId, sortBy, page = 1, pageSize = 5 } = params;
+
+    // Pagination: First we have to calculate the number of documents to skip based on the page number and the page size:
+    const skipAmount = (page - 1) * pageSize; // Example: If we are on page 2 and the page size is 20, we have to skip 20 documents. (20 * (2 - 1) = 20 * 1 = 20)
 
     // If we have a filter we have to filter the answers by the filter. We initialize the sortOptions object:
     let sortOptions = {};
@@ -176,9 +179,18 @@ export async function getAnswers(params: GetAnswersParams) {
         model: User,
         select: "_id clerkId name picture",
       })
-      .sort(sortOptions);
+      .sort(sortOptions)
+      .skip(skipAmount)
+      .limit(pageSize);
 
-    return { answers };
+    // Pagination: We have to calculate if there are more pages with answers to show:
+    const totalAnswers = await Answer.countDocuments({
+      question: questionId, // We have to count the number of answers for the question we are interested in.
+    });
+
+    const isNextAnswers = totalAnswers > skipAmount + answers.length; // If the total number of answers is greater than the page number times the page size there are more answers to show.
+
+    return { answers, isNextAnswers };
   } catch (error) {
     console.log(error);
     throw error;
