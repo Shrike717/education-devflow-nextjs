@@ -31,7 +31,7 @@ const GlobalFilters = () => {
       });
 
       // Then we want to push the new URL to the browser:
-      router.push(newUrl, { scroll: false });
+      router.push(newUrl, { scroll: false }); // We don't want to scroll to the top of the page
     } else {
       // We set the active state when clicked on the button
       setActive(item);

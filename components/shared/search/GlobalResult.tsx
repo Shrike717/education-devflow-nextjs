@@ -3,23 +3,22 @@ import React, { useEffect, useState } from "react";
 import { ReloadIcon } from "@radix-ui/react-icons";
 import { useSearchParams } from "next/navigation";
 import Link from "next/link";
-import { render } from "react-dom";
 import Image from "next/image";
 import GlobalFilters from "./GlobalFilters";
+import { globalSearch } from "@/lib/actions/general.action";
 
+// This is the main component that will show the search result. It is a modal that will appear below the navbar‚
 const GlobalResult = () => {
-  // We need to know what  we are searchiing for. This comes from searchParams of the url
-  const searchParams = useSearchParams();
-
-  const [isLoading, setisLoading] = useState(false);
+  const searchParams = useSearchParams(); // We need to know what  we are searching for. This comes from searchParams of the url
+  const [isLoading, setisLoading] = useState(false); // We need to show a loader during data fetch process
   // This will be the data we want to show
   const [result, setResult] = useState([
-    { type: "question", id: 1, title: "Next.js question" }, // Fake data to style the UI
+    { type: "question", id: 1, title: "Next.js question" }, // Fake data to style the UI before we get the real data
     { type: "tag", id: 1, title: "Nextjs " },
     { type: "user", id: 1, title: "user1" },
   ]);
 
-  // hhen we can extract 2 params from the searchParams::
+  // Then we can extract 2 params from the searchParams::
   const global = searchParams.get("global");
   const type = searchParams.get("type"); // The type is or the filter we want to apply
 
@@ -31,6 +30,11 @@ const GlobalResult = () => {
 
       try {
         // This call fetches all the needed data from everywhere  all at once
+        const res = await globalSearch({ query: global, type });
+
+        // After we get the data, we can set the result in the state
+        setResult(JSON.parse(res));
+        // console.log("[GlobalResult] res: ", res);
       } catch (error) {
         console.log(error);
         throw error;
@@ -38,19 +42,35 @@ const GlobalResult = () => {
         setisLoading(false); // We need to hide the loader
       }
     };
+
+    // If we do have the global search, we have to call the fetchResult function
+    if (global) {
+      fetchResult();
+    }
   }, [global, type]);
 
   // This function has to build the links as an url that points to a certain global search result based on the filter type:
   const renderLink = (type: string, id: string) => {
-    return "/";
+    switch (type) {
+      case "question":
+        return `/question/${id}`;
+      case "answer":
+        return `/question/${id}`;
+      case "user":
+        return `/profile/${id}`;
+      case "tag":
+        return `/tags/${id}`;
+      default:
+        return "/";
+    }
   };
 
   return (
     // This is one of the rare occasions where to use absolute positioning! Modal has to appear below the navbar
     <div className="absolute top-full z-10 mt-3 w-full rounded-xl bg-light-800 py-5 shadow-sm dark:bg-dark-400">
-      <p className="text-dark400_light900 paragraph-semibold px-5">
+      <div className="text-dark400_light900 paragraph-semibold px-5">
         <GlobalFilters />
-      </p>
+      </div>
       <div className="my-5 h-[1px] bg-light-700/50 dark:bg-dark-500/50" />
       <div className="space-y-5">
         <p className="text-dark400_light900 paragraph-semibold px-5">
@@ -71,7 +91,7 @@ const GlobalResult = () => {
             {result.length > 0 ? (
               result.map((item: any, index: number) => (
                 <Link
-                  href={renderLink("type", item.id)}
+                  href={renderLink(item.type, item.id)}
                   key={item.type + item.id + index} // To make sure the key is unique we merge the type and id with the index
                   className="flex w-full cursor-pointer items-start gap-3 px-5 py-2.5 hover:bg-light-700/50 hover:dark:bg-dark-500/50"
                 >

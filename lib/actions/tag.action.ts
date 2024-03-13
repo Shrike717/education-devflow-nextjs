@@ -173,10 +173,10 @@ export async function getTopPopularTags() {
     // Connect to the database:
     await connectToDatabase();
 
-    // We get the top popular tags from the database. We use the aggregate method to get the top popular tags:
+    // We get the top popular tags from the database. We use the aggregate method to get the top popular tags. The aggregate method is used to process data records and return computed results.
     const popularTags = await Tag.aggregate([
-      { $project: { name: 1, numberOfQuestions: { $size: "$questions" } } },
-      { $sort: { numberOfQuestions: -1 } },
+      { $project: { name: 1, numberOfQuestions: { $size: "$questions" } } }, // $project is used to select the fields we want to return. We want to return the name and the numberOfQuestions of the tags
+      { $sort: { numberOfQuestions: -1 } }, // $sort is used to sort the tags by the numberOfQuestions in descending order
       { $limit: 5 },
     ]);
 
