@@ -147,8 +147,16 @@ export async function createQuestion(params: CreateQuestionParams) {
     });
 
     // We need to create an interaction record for the users ask_question action. We want to track that this user created that question.
+    // This ineractions help us to track the users activity and to calculate the reputation of the user.
+    await Interaction.create({
+      user: author,
+      action: "ask_question",
+      question: question._id,
+      tags: tagDocuments,
+    });
 
     // And  then we want to increment authors reputation by 5 points for creating a question:
+    await User.findByIdAndUpdate(author, { $inc: { reputation: 5 } });
 
     // This mechanism shows the new question without reloading the homepage:
     revalidatePath(path);
@@ -278,7 +286,16 @@ export async function upvoteQuestion(params: QuestionVoteParams) {
       throw new Error("Question not found");
     }
 
-    // TODO: We want to increment the authors reputation for upvoting a question.
+    // Increment the authors reputation by +1/-1 for upvoting/revoking an upvote to the question.
+    // I don't underrstand why this ternary increments the reputation!!! I would expect it to decrement the reputation if the user has upvoted.
+    await User.findByIdAndUpdate(userId, {
+      $inc: { reputation: hasupVoted ? -1 : 1 }, // If the user has upvoted we have to decrement the reputation by 1. If the user has revoked the upvote we have to increment the reputation by 1.
+    });
+
+    // Increment the authors reputation by +10/-10 for receiving an upvote/downvote to the question.
+    await User.findByIdAndUpdate(question.author, {
+      $inc: { reputation: hasupVoted ? -10 : 10 }, // If the user has upvoted we have to increment the reputation by 10. If the user has revoked the upvote we have to decrement the reputation by 10.
+    });
 
     // Finally we have to revalidate the path so that the frontend UI actually shows the updated question:
     revalidatePath(path);

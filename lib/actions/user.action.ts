@@ -364,7 +364,7 @@ export async function getUserQuestions(params: GetUserStatsParams) {
 
     // Get all the user's questions:
     const userQuestions = await Question.find({ author: userId })
-      .sort({ views: -1, upvotes: -1 }) // Sort the questions by views and upvotes in descending order
+      .sort({ createdAt: -1, views: -1, upvotes: -1 }) // Sort the questions by views and upvotes in descending order. The first sort option takes the highestt effect.
       .skip(skipAmount) // We skip the amount of documents based on the page number and the page size.
       .limit(pageSize) // We limit the amount of documents based on the page size.
       .populate("tags", "_id name") // Populate the questions with the tags. We want to populate the tags with the _id and name
