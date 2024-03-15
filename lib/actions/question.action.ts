@@ -345,7 +345,16 @@ export async function downvoteQuestion(params: QuestionVoteParams) {
       throw new Error("Question not found");
     }
 
-    // TODO: We want to increment the authors reputation for upvoting a question.
+    // Decrement the authors reputation by +1/-1 for dowwnvoting/revoking an upvote to the question.
+    // I don't understand why this ternary increments the reputation!!! I would expect it to decrement the reputation if the user has upvoted.
+    await User.findByIdAndUpdate(userId, {
+      $inc: { reputation: hasdownVoted ? 1 : -1 }, // If the user has downvoted we have to decrement the reputation by 1. If the user has revoked the upvote we have to increment the reputation by 1.
+    });
+
+    // Decrement the authors reputation by +10/-10 for receiving an upvote/downvote to the question.
+    await User.findByIdAndUpdate(question.author, {
+      $inc: { reputation: hasdownVoted ? 10 : -10 }, // If the user has upvoted we have to increment the reputation by 10. If the user has revoked the upvote we have to decrement the reputation by 10.
+    });
 
     // Finally we have to revalidate the path so that the frontend UI actually shows the updated question:
     revalidatePath(path);

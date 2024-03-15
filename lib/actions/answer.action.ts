@@ -26,11 +26,23 @@ export async function createAnswer(params: CreateAnswerParams) {
     });
 
     // Add answer to the questions answers array:
-    await Question.findByIdAndUpdate(question, {
+    const questionObject = await Question.findByIdAndUpdate(question, {
       $push: { answers: newAnswer._id },
     });
 
-    // TODO: Add interaction....
+    // After an answer was created, we also add an interaction. The interacton is used to keep track of the users activity. This is for the recommendation system.
+    await Interaction.create({
+      user: author,
+      action: "answer",
+      question,
+      answer: newAnswer._id,
+      tags: questionObject.tags,
+    });
+
+    // Then we want to increment the authors reputation for answering a question. This is for the reputation system.
+    await User.findByIdAndUpdate(author, {
+      $inc: { reputation: 10 },
+    });
 
     revalidatePath(path); // We revalidate the path to update the cache. This will cause the page to be revalidated and updated.
   } catch (error) {
@@ -81,7 +93,16 @@ export async function upvoteAnswer(params: AnswerVoteParams) {
       throw new Error("Answer not found");
     }
 
-    // TODO: We want to increment the authors reputation for upvoting a question.
+    // Increment the authors reputation by +1/-1 for upvoting/revoking an upvote to the answer.
+    // I don't underrstand why this ternary increments the reputation!!! I would expect it to decrement the reputation if the user has upvoted.
+    await User.findByIdAndUpdate(userId, {
+      $inc: { reputation: hasupVoted ? -1 : 1 }, // If the user has upvoted we have to decrement the reputation by 1. If the user has revoked the upvote we have to increment the reputation by 1.
+    });
+
+    // Increment the authors reputation by +10/-10 for receiving an upvote/downvote to the answer.
+    await User.findByIdAndUpdate(answer.author, {
+      $inc: { reputation: hasupVoted ? -10 : 10 }, // If the user has upvoted we have to increment the reputation by 10. If the user has revoked the upvote we have to decrement the reputation by 10.
+    });
 
     // Finally we have to revalidate the path so that the frontend UI actually shows the updated question:
     revalidatePath(path);
@@ -131,7 +152,16 @@ export async function downvoteAnswer(params: AnswerVoteParams) {
       throw new Error("Answer not found");
     }
 
-    // TODO: We want to increment the authors reputation for upvoting a question.
+    // Increment the authors reputation by +1/-1 for upvoting/revoking an upvote to the answer.
+    // I don't underrstand why this ternary increments the reputation!!! I would expect it to decrement the reputation if the user has upvoted.
+    await User.findByIdAndUpdate(userId, {
+      $inc: { reputation: hasdownVoted ? 1 : -1 }, // If the user has upvoted we have to decrement the reputation by 1. If the user has revoked the upvote we have to increment the reputation by 1.
+    });
+
+    // Increment the authors reputation by +10/-10 for receiving an upvote/downvote to the question.
+    await User.findByIdAndUpdate(answer.author, {
+      $inc: { reputation: hasdownVoted ? 10 : -10 }, // If the user has upvoted we have to increment the reputation by 10. If the user has revoked the upvote we have to decrement the reputation by 10.
+    });
 
     // Finally we have to revalidate the path so that the frontend UI actually shows the updated question:
     revalidatePath(path);
