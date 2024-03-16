@@ -3,6 +3,8 @@ import { type ClassValue, clsx } from "clsx";
 import { twMerge } from "tailwind-merge";
 
 import qs from "query-string";
+import { BADGE_CRITERIA } from "@/constants";
+import { BadgeCounts } from "@/types";
 
 // This code belongs to the configuration of ShadCn. Was created automatically during initialization
 export function cn(...inputs: ClassValue[]) {
@@ -106,4 +108,43 @@ export const removeKeysFromQuery = ({
     },
     { skipNull: true } // This is to skip null values
   );
+};
+
+interface BadgeParam {
+  criteria: {
+    type: keyof typeof BADGE_CRITERIA;
+    count: number;
+  }[];
+}
+
+// This function checks how many badges the user has and returns the badge counts.
+export const assignBadges = (params: BadgeParam) => {
+  // First we have to create an object which stores the badge type and the count of the badge initially:
+  const badgeCounts: BadgeCounts = {
+    GOLD: 0,
+    SILVER: 0,
+    BRONZE: 0,
+  };
+
+  // Then we need to destruct the criteria from the params:
+  const { criteria } = params;
+
+  // Then we need to iterate over the criteria and assign the badge counts:
+  criteria.forEach((item) => {
+    // First we need to get the type and the count of the badge:
+    const { type, count } = item;
+
+    // Then we want to figure out the badge levels. BADGE_CRITERIA is an object that stores the badge criteria for each type:
+    const badgeLevels: any = BADGE_CRITERIA[type];
+
+    // Then we want to iterate over the badge levels and assign the badge counts:
+    Object.keys(badgeLevels).forEach((level: any) => {
+      if (count >= badgeLevels[level]) {
+        badgeCounts[level as keyof BadgeCounts] += 1;
+      }
+    });
+  });
+
+  // Finally we want to return the badge counts:
+  return badgeCounts;
 };

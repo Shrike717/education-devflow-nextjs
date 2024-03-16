@@ -17,6 +17,8 @@ import Question from "@/database/question.model";
 import Tag from "@/database/tag.model";
 import { FilterQuery } from "mongoose";
 import Answer from "@/database/answer.model";
+import { BadgeCriteriaType } from "@/types";
+import { assignBadges } from "../utils";
 
 // Here we have all the actions for the users model:
 
@@ -339,8 +341,82 @@ export async function getUserInfo(params: GetUserByIdParams) {
     const totalQuestions = await Question.countDocuments({ author: user._id });
     const totalAnswers = await Answer.countDocuments({ author: user._id });
 
+    // For the badge criteria system we also need the total amount of upvotes of the user's questions and answers:
+
+    // Get the total amount of upvotes of the user's questions:
+    const [questionsUpvotes] = await Question.aggregate([
+      { $match: { author: user._id } }, // We want to match the questions with the author.This is the first stage of the aggregation pipeline. We get all the questions of the user.
+      {
+        $project: {
+          _id: 0, // Why do we set _id to 0? We want to exclude the _id from the projection. We don't need the _id of the questions.
+          upvotes: { $size: "$upvotes" }, // We want to project the upvotes of the questions. This is the second stage of the aggregation pipeline. We get the amount of upvotes of the questions.
+        },
+      },
+      {
+        $group: {
+          _id: null,
+          totalUpvotes: { $sum: "$upvotes" }, // We want to group the upvotes of the questions. This is the third stage of the aggregation pipeline. We get the total amount of upvotes of the questions.
+        },
+      },
+    ]);
+
+    // Get the total amount of upvotes of the user's answers:
+    const [answersUpvotes] = await Answer.aggregate([
+      { $match: { author: user._id } }, // We want to match the answers with the author.This is the first stage of the aggregation pipeline. We get all the answers of the user.
+      {
+        $project: {
+          _id: 0, // Why do we set _id to 0? We want to exclude the _id from the projection. We don't need the _id of the answers.
+          upvotes: { $size: "$upvotes" }, // We want to project the upvotes of the answers. This is the second stage of the aggregation pipeline. We get the amount of upvotes of the answers.
+        },
+      },
+      {
+        $group: {
+          _id: null,
+          totalUpvotes: { $sum: "$upvotes" }, // We want to group the upvotes of the answers. This is the third stage of the aggregation pipeline. We get the total amount of upvotes of the answers.
+        },
+      },
+    ]);
+
+    // Get the total amount of views of the user's questions:
+    const [questionViews] = await Question.aggregate([
+      { $match: { author: user._id } }, // We want to match the questions with the author.This is the first stage of the aggregation pipeline. We get all the answers of the user.
+      {
+        $group: {
+          _id: null,
+          totalViews: { $sum: "$views" }, // We want to group the views of the questions. This is the second stage of the aggregation pipeline. We get the total amount of views of the questions.
+        },
+      },
+    ]);
+
+    // Now that we have all the needed values we set the criteria for the badges:
+    const criteria = [
+      { type: "QUESTION_COUNT" as BadgeCriteriaType, count: totalQuestions },
+      { type: "ANSWER_COUNT" as BadgeCriteriaType, count: totalAnswers },
+      {
+        type: "QUESTION_UPVOTES" as BadgeCriteriaType,
+        count: questionsUpvotes?.totalUpvotes || 0,
+      },
+      {
+        type: "ANSWER_UPVOTES" as BadgeCriteriaType,
+        count: answersUpvotes?.totalUpvotes || 0,
+      },
+      {
+        type: "TOTAL_VIEWS" as BadgeCriteriaType,
+        count: questionViews?.totalViews || 0,
+      },
+    ];
+
+    // Then we make use of a utility function to get the number of badges based on the criteria:
+    const badgeCounts = assignBadges({ criteria });
+
     // Return the user and the additional data:
-    return { user, totalQuestions, totalAnswers };
+    return {
+      user,
+      totalQuestions,
+      totalAnswers,
+      badgeCounts,
+      reputation: user.reputation,
+    };
   } catch (error) {
     console.log(error);
     throw error;
