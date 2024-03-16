@@ -34,6 +34,8 @@ const Answer = ({ question, questionId, authorId }: Props) => {
 
   // We need to set a state for the button, so that it can't be pressed twice
   const [isSubmitting, setIsSubmitting] = useState(false);
+  // We need to have a state for hhe AI functionalty
+  const [isSubmittingAI, setIsSubmittingAI] = useState(false);
 
   // Here we initialize the hook for the editor
   const editorRef = useRef<Editor | null>(null); // With this we can access the editor values
@@ -73,6 +75,38 @@ const Answer = ({ question, questionId, authorId }: Props) => {
     }
   };
 
+  // This function is for generating an AI answer
+  const generateAIAnswer = async () => {
+    // First we check if theree is an authorId:
+    if (!authorId) return;
+
+    // If there is one we set the loader state to true:
+    setIsSubmittingAI(true);
+
+    //
+    try {
+      // Here we make a call to our own API endpoint to generate an AI answer
+      const response = await fetch(
+        `${process.env.NEXT_PUBLIC_SERVER_URL}
+            /api/chatgpt`,
+        {
+          method: "POST",
+          body: JSON.stringify({ question }),
+        }
+      );
+
+      // We parse the response
+      const aiAnswer = await response.json();
+
+      // For now wee simply alert the answer
+      alert(aiAnswer.reply);
+    } catch (error) {
+      console.error("Error generating AI answer", error);
+    } finally {
+      setIsSubmittingAI(false);
+    }
+  };
+
   return (
     <div>
       <div className="mt-2 flex flex-col justify-between gap-5 sm:flex-row sm:items-center sm:gap-2">
@@ -82,7 +116,7 @@ const Answer = ({ question, questionId, authorId }: Props) => {
 
         <Button
           className="btn light-border-2 gap-1.5 rounded-md px-4 py-2.5 text-primary-500 shadow-none dark:text-primary-500"
-          onClick={() => {}}
+          onClick={generateAIAnswer}
         >
           <Image
             src="/assets/icons/stars.svg"
@@ -91,7 +125,7 @@ const Answer = ({ question, questionId, authorId }: Props) => {
             height={12}
             className="object-contain"
           />
-          Generate an AI Answer
+          Generate AI Answer
         </Button>
       </div>
       <Form {...form}>
