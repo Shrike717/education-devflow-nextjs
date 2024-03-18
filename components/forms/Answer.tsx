@@ -87,8 +87,7 @@ const Answer = ({ question, questionId, authorId }: Props) => {
     try {
       // Here we make a call to our own API endpoint to generate an AI answer
       const response = await fetch(
-        `${process.env.NEXT_PUBLIC_SERVER_URL}
-            /api/chatgpt`,
+        `${process.env.NEXT_PUBLIC_SERVER_URL}/api/chatgpt`,
         {
           method: "POST",
           body: JSON.stringify({ question }),
@@ -98,8 +97,17 @@ const Answer = ({ question, questionId, authorId }: Props) => {
       // We parse the response
       const aiAnswer = await response.json();
 
-      // For now wee simply alert the answer
-      alert(aiAnswer.reply);
+      // Then we need to convert plain text to HTML:
+      const formattedAnswer = aiAnswer.reply.replace(/\n/g, "<br />");
+
+      // Then we need to check if a reference to the editor exists
+      if (editorRef.current) {
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+        const editor = editorRef.current as any; // We define the editor as any, because the editor is not typed
+        editor.setContent(formattedAnswer); // We set the content of the editor to the AI answer
+      }
+
+      // Later we add a Toast to show the user that the AI answer was generated
     } catch (error) {
       console.error("Error generating AI answer", error);
     } finally {
@@ -118,14 +126,20 @@ const Answer = ({ question, questionId, authorId }: Props) => {
           className="btn light-border-2 gap-1.5 rounded-md px-4 py-2.5 text-primary-500 shadow-none dark:text-primary-500"
           onClick={generateAIAnswer}
         >
-          <Image
-            src="/assets/icons/stars.svg"
-            alt="star"
-            width={12}
-            height={12}
-            className="object-contain"
-          />
-          Generate AI Answer
+          {isSubmittingAI ? (
+            <>Generating...</>
+          ) : (
+            <>
+              <Image
+                src="/assets/icons/stars.svg"
+                alt="star"
+                width={12}
+                height={12}
+                className="object-contain"
+              />
+              Generate AI Answer
+            </>
+          )}
         </Button>
       </div>
       <Form {...form}>
