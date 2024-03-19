@@ -10,6 +10,7 @@ import { formatBigNumber } from "@/lib/utils";
 import Image from "next/image";
 import { usePathname, useRouter } from "next/navigation";
 import { useEffect } from "react";
+import { toast } from "../ui/use-toast";
 
 interface Props {
   type: string;
@@ -39,10 +40,26 @@ const Votes = ({
 
   // Function to save the question or answer
   const handleSave = async () => {
+    // check if the user is logged in
+    if (!userId) {
+      return toast({
+        // This function has been imported from the use-toast.tsx file
+        title: "Please log in",
+        description: "You must be logged in to perform this action",
+      });
+    }
+
     await toggleSaveQuestion({
       userId: JSON.parse(userId),
       questionId: JSON.parse(itemId),
       path: pathname,
+    });
+
+    // Show a toast:
+    return toast({
+      // This function has been imported from the use-toast.tsx file
+      title: `Question successfully ${!hasSaved ? "saved in" : "removed from"} your collection`,
+      variant: !hasSaved ? "default" : "destructive",
     });
   };
 
@@ -50,10 +67,11 @@ const Votes = ({
   const handleVote = async (action: string) => {
     // check if the user is logged in
     if (!userId) {
-      //   return toast({
-      //     title: "Please log in",
-      //     description: "You must be logged in to perform this action",
-      //   });
+      return toast({
+        // This function has been imported from the use-toast.tsx file
+        title: "Please log in",
+        description: "You must be logged in to perform this action",
+      });
     }
 
     // check if the user has already upvoted
@@ -77,7 +95,12 @@ const Votes = ({
         });
       }
 
-      // TODO: Show a toast
+      // Show a toast:
+      return toast({
+        // This function has been imported from the use-toast.tsx file
+        title: `Upvote successfully ${!hasupVoted ? "added" : "removed"}`,
+        variant: !hasupVoted ? "default" : "destructive",
+      });
     }
 
     // check if the user has already downvoted
@@ -101,7 +124,12 @@ const Votes = ({
         });
       }
 
-      // TODO: Show a toast
+      // Show a toast:
+      return toast({
+        // This function has been imported from the use-toast.tsx file
+        title: `Downvote successfully ${!hasdownVoted ? "added" : "removed"}`,
+        variant: !hasdownVoted ? "default" : "destructive",
+      });
     }
   };
 

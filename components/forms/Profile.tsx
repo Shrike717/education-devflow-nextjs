@@ -18,6 +18,7 @@ import { useState } from "react";
 import { ProfileSchema } from "@/lib/validations";
 import { usePathname, useRouter } from "next/navigation";
 import { updateUser } from "@/lib/actions/user.action";
+import { toast } from "../ui/use-toast";
 
 interface Props {
   clerkId: string;
@@ -72,6 +73,12 @@ const Profile = ({ clerkId, user }: Props) => {
     } finally {
       // After the request is done we stop the submitting process
       setIsSubmitting(false);
+
+      // Show a toast
+      toast({
+        title: "Profile successully updated",
+        variant: "default",
+      });
     }
   }
 
@@ -177,7 +184,7 @@ const Profile = ({ clerkId, user }: Props) => {
         <div className="mt-7 flex justify-end">
           <Button
             type="submit"
-            className="primary-gradient w-fit"
+            className="primary-gradient w-fit !text-light-900"
             disabled={isSubmitting}
           >
             {isSubmitting ? "Saving..." : "Save"}

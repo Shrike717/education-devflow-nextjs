@@ -19,6 +19,7 @@ import { Button } from "../ui/button";
 import Image from "next/image";
 import { createAnswer } from "@/lib/actions/answer.action";
 import { usePathname } from "next/navigation";
+import { toast } from "../ui/use-toast";
 
 interface Props {
   question: string;
@@ -77,8 +78,14 @@ const Answer = ({ question, questionId, authorId }: Props) => {
 
   // This function is for generating an AI answer
   const generateAIAnswer = async () => {
-    // First we check if theree is an authorId:
-    if (!authorId) return;
+    // First we check if there is an authorId:
+    if (!authorId) {
+      return toast({
+        // This function has been imported from the use-toast.tsx file
+        title: "Please log in",
+        description: "You must be logged in to perform this action",
+      });
+    }
 
     // If there is one we set the loader state to true:
     setIsSubmittingAI(true);
