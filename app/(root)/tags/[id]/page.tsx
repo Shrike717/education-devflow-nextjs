@@ -6,6 +6,7 @@ import { IQuestion } from "@/database/question.model";
 import { getQuestionsByTagId } from "@/lib/actions/tag.action";
 import { URLProps } from "@/types";
 import React from "react";
+import Loading from "./loading";
 
 const Page = async ({ params, searchParams }: URLProps) => {
   // First we load the questions related to the tag:
@@ -14,6 +15,11 @@ const Page = async ({ params, searchParams }: URLProps) => {
     searchQuery: searchParams.q, // q as in query
     page: searchParams.page ? +searchParams.page : 1, // The page number is taken from the URL query parameter. +searchParams.page is changing it to a number. If it's not there, the default value is 1.
   });
+
+  // Fake loading variable to simulate loading state
+  //   const isLoading = true;
+
+  //   if (isLoading) return <Loading />;
 
   return (
     <>

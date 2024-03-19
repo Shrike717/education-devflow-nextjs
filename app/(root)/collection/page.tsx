@@ -7,6 +7,7 @@ import { QuestionFilters } from "@/constants/filters";
 import { getSavedQuestions } from "@/lib/actions/user.action";
 import { SearchParamsProps } from "@/types";
 import { auth } from "@clerk/nextjs";
+import Loading from "./loading";
 
 export default async function Collection({
   searchParams,
@@ -25,6 +26,11 @@ export default async function Collection({
   });
 
   //   console.log("[Homepage] result:", result.questions);
+
+  // Fake loading variable to simulate loading state
+  //   const isLoading = true;
+
+  //   if (isLoading) return <Loading />;
 
   return (
     <>

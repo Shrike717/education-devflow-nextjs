@@ -11,6 +11,7 @@ import ProfileLink from "@/components/shared/ProfileLink";
 import Stats from "@/components/shared/Stats";
 import QuestionTab from "@/components/shared/QuestionTab";
 import AnswerTab from "@/components/shared/AnswerTab";
+import Loading from "./loading";
 
 const Page = async ({ params, searchParams }: URLProps) => {
   // Getting the logged in user's clerkId from a server-side component:
@@ -18,6 +19,11 @@ const Page = async ({ params, searchParams }: URLProps) => {
 
   // Fetching the user data we need for this page:
   const userInfo = await getUserInfo({ userId: params.id }); // We specify which user we want to get by the userId
+
+  // Fake loading variable to simulate loading state
+  //   const isLoading = true;
+
+  //   if (isLoading) return <Loading />;
 
   return (
     <>

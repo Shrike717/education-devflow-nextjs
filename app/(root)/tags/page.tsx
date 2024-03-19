@@ -7,6 +7,7 @@ import { getAllTags } from "@/lib/actions/tag.action";
 import { SearchParamsProps } from "@/types";
 
 import Link from "next/link";
+import Loading from "./loading";
 
 const Page = async ({
   searchParams,
@@ -17,6 +18,11 @@ const Page = async ({
     filter: searchParams.filter,
     page: searchParams.page ? +searchParams.page : 1, // The page number is taken from the URL query parameter. +searchParams.page is changing it to a number. If it's not there, the default value is 1.
   });
+
+  // Fake loading variable to simulate loading state
+  //   const isLoading = true;
+
+  //   if (isLoading) return <Loading />;
 
   return (
     <>
