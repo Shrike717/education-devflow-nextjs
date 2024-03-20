@@ -6,7 +6,14 @@ import { UserFilters } from "@/constants/filters";
 import { getAllUsers } from "@/lib/actions/user.action";
 import { SearchParamsProps } from "@/types";
 import Link from "next/link";
-import Loading from "./loading";
+// import Loading from "./loading";
+import type { Metadata } from "next";
+
+// This is the metadata for the page
+export const metadata: Metadata = {
+  title: "Community | DevFlow",
+  description: `A community of amazing minds. Join us to ask and answer programming questions.`,
+};
 
 const Page = async ({
   searchParams,

@@ -7,7 +7,14 @@ import { QuestionFilters } from "@/constants/filters";
 import { getSavedQuestions } from "@/lib/actions/user.action";
 import { SearchParamsProps } from "@/types";
 import { auth } from "@clerk/nextjs";
-import Loading from "./loading";
+// import Loading from "./loading";
+import type { Metadata } from "next";
+
+// This is the metadata for the page
+export const metadata: Metadata = {
+  title: "Collection | DevFlow",
+  description: `A collection of all your saved questions. You can save questions by clicking the bookmark icon.`,
+};
 
 export default async function Collection({
   searchParams,

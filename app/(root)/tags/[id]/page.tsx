@@ -6,7 +6,14 @@ import { IQuestion } from "@/database/question.model";
 import { getQuestionsByTagId } from "@/lib/actions/tag.action";
 import { URLProps } from "@/types";
 import React from "react";
-import Loading from "./loading";
+// import Loading from "./loading";
+import type { Metadata } from "next";
+
+// This is the metadata for the page
+export const metadata: Metadata = {
+  title: "Tag | DevFlow",
+  description: `Browse questions related to a specific tag. Ask questions and get answers.`,
+};
 
 const Page = async ({ params, searchParams }: URLProps) => {
   // First we load the questions related to the tag:

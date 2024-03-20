@@ -9,7 +9,14 @@ import { HomePageFilters } from "@/constants/filters";
 import { getQuestions } from "@/lib/actions/question.action";
 import { SearchParamsProps } from "@/types";
 import Link from "next/link";
-import Loading from "./loading";
+// import Loading from "./loading";
+import type { Metadata } from "next";
+
+// This is the metadata for the page
+export const metadata: Metadata = {
+  title: "Home | DevFlow",
+  description: `A community-driven platform for asking and answering programming questions.`,
+};
 
 export default async function Home({
   searchParams,

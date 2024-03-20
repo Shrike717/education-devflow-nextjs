@@ -11,7 +11,14 @@ import ProfileLink from "@/components/shared/ProfileLink";
 import Stats from "@/components/shared/Stats";
 import QuestionTab from "@/components/shared/QuestionTab";
 import AnswerTab from "@/components/shared/AnswerTab";
-import Loading from "./loading";
+// import Loading from "./loading";
+import type { Metadata } from "next";
+
+// This is the metadata for the page
+export const metadata: Metadata = {
+  title: "Profile | DevFlow",
+  description: `Your profile page on DevFlow. Here you can see your stats, questions, and answers.`,
+};
 
 const Page = async ({ params, searchParams }: URLProps) => {
   // Getting the logged in user's clerkId from a server-side component:

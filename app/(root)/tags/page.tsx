@@ -5,9 +5,15 @@ import LocalSearchbar from "@/components/shared/search/LocalSearchbar";
 import { TagFilters } from "@/constants/filters";
 import { getAllTags } from "@/lib/actions/tag.action";
 import { SearchParamsProps } from "@/types";
-
 import Link from "next/link";
-import Loading from "./loading";
+// import Loading from "./loading";
+import type { Metadata } from "next";
+
+// This is the metadata for the page
+export const metadata: Metadata = {
+  title: "Tags | DevFlow",
+  description: `Browse the most popular tags on DevFlow. Ask questions and get answers.`,
+};
 
 const Page = async ({
   searchParams,
