@@ -94,7 +94,7 @@ const GlobalSearch = () => {
             if (!isOpen) setIsOpen(true); // Here we have to check if the modal is open. If not, we want to open it
             if (e.target.value === "" && isOpen) setIsOpen(false); // If the input is empty and the modal is open, we want to close it
           }}
-          className="paragraph-regular no-focus placeholder text-dark400_light700 background-light800_darkgradient border-none shadow-none outline-none"
+          className="paragraph-regular no-focus placeholder text-dark400_light700 border-none bg-transparent shadow-none outline-none"
         />
       </div>
       {isOpen && <GlobalResult />}

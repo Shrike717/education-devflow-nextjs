@@ -6,11 +6,15 @@ import Pagination from "@/components/shared/Pagination";
 import LocalSearchbar from "@/components/shared/search/LocalSearchbar";
 import { Button } from "@/components/ui/button";
 import { HomePageFilters } from "@/constants/filters";
-import { getQuestions } from "@/lib/actions/question.action";
+import {
+  getQuestions,
+  getRecommendedQuestions,
+} from "@/lib/actions/question.action";
 import { SearchParamsProps } from "@/types";
 import Link from "next/link";
 // import Loading from "./loading";
 import type { Metadata } from "next";
+import { auth } from "@clerk/nextjs";
 
 // This is the metadata for the page
 export const metadata: Metadata = {
@@ -21,19 +25,34 @@ export const metadata: Metadata = {
 export default async function Home({
   searchParams,
 }: SearchParamsProps): Promise<JSX.Element> {
-  // Fetching all questions from the database:
-  const result = await getQuestions({
-    searchQuery: searchParams.q,
-    filter: searchParams.filter,
-    page: searchParams.page ? +searchParams.page : 1, // The page number is taken from the URL query parameter. +searchParams.page is changing it to a number. If it's not there, the default value is 1.
-  });
+  const { userId } = auth();
 
+  let result;
+
+  if (searchParams.filter === "recommended") {
+    // Fetch recommended questions
+    if (userId) {
+      result = await getRecommendedQuestions({
+        userId, // The user ID is taken from the session. From auth()
+        searchQuery: searchParams.q,
+        page: searchParams.page ? +searchParams.page : 1, // The page number is taken from the URL query parameter. +searchParams.page is changing it to a number. If it's not there, the default value is 1.
+      });
+    } else {
+      // If the user is not logged in, we return an empty result object
+      result = { questions: [], isNext: false };
+    }
+  } else {
+    // Fetching all questions from the database:
+    result = await getQuestions({
+      searchQuery: searchParams.q,
+      filter: searchParams.filter,
+      page: searchParams.page ? +searchParams.page : 1, // The page number is taken from the URL query parameter. +searchParams.page is changing it to a number. If it's not there, the default value is 1.
+    });
+  }
   // Fake loading variable to simulate loading state
   //   const isLoading = true;
 
   //   if (isLoading) return <Loading />;
-
-  // Todo:  Fetch recommended questions
 
   return (
     <>
