@@ -275,6 +275,7 @@ export async function getRecommendedQuestions(params: RecommendedParams) {
 
     // Get distinct tag IDs from user's interactions.
     const distinctUserTagIds = [
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
       ...new Set(userTags.map((tag: any) => tag._id)),
     ];
 

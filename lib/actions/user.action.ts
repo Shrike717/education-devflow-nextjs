@@ -491,6 +491,7 @@ export async function getUserAnswers(params: GetUserStatsParams) {
   }
 }
 
+// BOIlERPLATE CODE
 // export async function getAllUsers(params: GetAllUsersParams) {
 //   try {
 //     // Connect to the database:

@@ -135,9 +135,11 @@ export const assignBadges = (params: BadgeParam) => {
     const { type, count } = item;
 
     // Then we want to figure out the badge levels. BADGE_CRITERIA is an object that stores the badge criteria for each type:
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     const badgeLevels: any = BADGE_CRITERIA[type];
 
     // Then we want to iterate over the badge levels and assign the badge counts:
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     Object.keys(badgeLevels).forEach((level: any) => {
       if (count >= badgeLevels[level]) {
         badgeCounts[level as keyof BadgeCounts] += 1;

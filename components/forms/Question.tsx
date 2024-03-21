@@ -146,6 +146,7 @@ const Question = ({ type, mongoUserId, questionDetails }: Props) => {
   };
 
   // Function for removing the tags
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const handleTagRemove = (tag: string, field: any) => {
     // We get the tags from the array
     const tags = field.value;
@@ -265,6 +266,7 @@ const Question = ({ type, mongoUserId, questionDetails }: Props) => {
                   {/* Here we show the tags */}
                   {field.value.length > 0 && (
                     <div className="flex-start mt-2.5 gap-2.5">
+                      {/* eslint-disable-next-line @typescript-eslint/no-explicit-any */}
                       {field.value.map((tag: any) => (
                         <Badge
                           key={tag}

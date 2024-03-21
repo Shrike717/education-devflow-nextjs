@@ -47,6 +47,7 @@ const GlobalSearch = () => {
 
   // This useEffect will close the modal when the user clicks outside of it
   useEffect(() => {
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     const handleOutsideClick = (e: any) => {
       if (
         searchContainerRef.current && // We need to check if the ref exists

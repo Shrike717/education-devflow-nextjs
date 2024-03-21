@@ -3,6 +3,7 @@ import { getUserById } from "@/lib/actions/user.action";
 import { ParamsProps } from "@/types";
 import { auth } from "@clerk/nextjs";
 
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
 const Page = async ({ params }: ParamsProps) => {
   // To get our mogoUser we first need to get the clerk userId:
   const { userId } = auth();

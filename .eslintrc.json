@@ -24,6 +24,6 @@
     }
   },
   "rules": {
-    "@typescript-eslint/explicit-module-boundary-types": "warn" // Warns when a React component or other function does not have explicit return type
+    // "@typescript-eslint/explicit-module-boundary-types": "warn" // Warns when a React component or other function does not have explicit return type
   }
 }

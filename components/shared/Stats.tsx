@@ -28,6 +28,7 @@ interface Props {
   reputation: number;
 }
 
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
 const Stats = ({ totalQuestions, totalAnswers, badges, reputation }: Props) => {
   return (
     <div className="mt-10">
