@@ -275,7 +275,6 @@ export async function getRecommendedQuestions(params: RecommendedParams) {
 
     // Get distinct tag IDs from user's interactions.
     const distinctUserTagIds = [
-      // tslint:disable-next-line: no-unsafe-any
       ...new Set(userTags.map((tag: any) => tag._id)),
     ];
 
