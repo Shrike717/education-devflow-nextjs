@@ -10,7 +10,7 @@ const Loading = () => {
       </div>
 
       <div className="flex flex-wrap gap-4">
-        {Array.from({ length: 9 }).map((item) => (
+        {Array.from({ length: 9 }).map((item: number) => (
           <Skeleton
             key={item}
             className="h-60 w-full rounded-xl sm:w-[260px]"
