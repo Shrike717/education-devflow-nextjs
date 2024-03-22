@@ -31,7 +31,7 @@ import { useTheme } from "@/context/ThemeProvider";
 // Props interface
 interface Props {
   type?: string;
-  mongoUserId: string;
+  mongoUserId: string | Null;
   questionDetails?: string;
 }
 
