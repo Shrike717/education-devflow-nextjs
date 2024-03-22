@@ -15,9 +15,7 @@ export const metadata: Metadata = {
   description: `Browse the most popular tags on DevFlow. Ask questions and get answers.`,
 };
 
-const Page = async ({
-  searchParams,
-}: SearchParamsProps): Promise<JSX.Element> => {
+const Page = async ({ searchParams }: SearchParamsProps) => {
   // Fetching all tags from the database. Therefore component is async:
   const result = await getAllTags({
     searchQuery: searchParams.q,
@@ -53,7 +51,8 @@ const Page = async ({
       {/* Sectin to show users */}
       <section className="mt-12 flex flex-wrap gap-4">
         {result.tags.length > 0 ? (
-          result.tags.map((tag) => (
+          // eslint-disable-next-line @typescript-eslint/no-explicit-any
+          result.tags.map((tag: any) => (
             <Link
               href={`/tags/${tag._id}`}
               key={tag._id}
