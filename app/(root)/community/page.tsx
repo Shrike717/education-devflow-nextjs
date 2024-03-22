@@ -8,7 +8,7 @@ import { SearchParamsProps } from "@/types";
 import Link from "next/link";
 // import Loading from "./loading";
 import type { Metadata } from "next";
-import { IUser } from "@/database/user.model";
+// import { IUser } from "@/database/user.model";
 
 // This is the metadata for the page
 export const metadata: Metadata = {
@@ -16,16 +16,16 @@ export const metadata: Metadata = {
   description: `A community of amazing minds. Join us to ask and answer programming questions.`,
 };
 
-interface Result {
-  users: IUser[];
-  isNext: boolean;
-}
+// interface Result {
+//   users: IUser[];
+//   isNext: boolean;
+// }
 
 const Page = async ({
   searchParams,
 }: SearchParamsProps): Promise<JSX.Element> => {
   // Fetching all users from the database. Therefore component is async:
-  const result: Result = await getAllUsers({
+  const result = await getAllUsers({
     searchQuery: searchParams.q,
     filter: searchParams.filter,
     page: searchParams.page ? +searchParams.page : 1, // The page number is taken from the URL query parameter. +searchParams.page is changing it to a number. If it's not there, the default value is 1.
