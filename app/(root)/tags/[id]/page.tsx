@@ -26,9 +26,9 @@ const Page = async ({ params, searchParams }: URLProps) => {
   //   console.log("[Tags detail page] result.questions: ", result.questions);
 
   // Log the details of each question
-  //   result.questions.map((question, index) =>
-  //     console.log(`[Tags detail page] Question ${index + 1}:`, question)
-  //   );
+  result.questions.map((question, index) =>
+    console.log(`[Tags detail page] Question ${index + 1}:`, question)
+  );
 
   // Fake loading variable to simulate loading state
   //   const isLoading = true;
