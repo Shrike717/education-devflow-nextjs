@@ -18,6 +18,7 @@ interface QuestionProps {
     _id: string;
     name: string;
     picture: string; // url
+    clerkId: string;
   };
   upvotes: string[];
   views: number;
