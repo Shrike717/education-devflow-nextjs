@@ -89,7 +89,7 @@ const Page = async ({ searchParams }: SearchParamsProps) => {
       <div className="mt-10">
         <Pagination
           pageNumber={searchParams.page ? +searchParams.page : 1} // The page number is taken from the URL query parameter. If it's not there, the default value is 1.
-          isNext={result.isNext} // The isNext prop is taken from the result object. It's a boolean value that tells us if there are more questions to show.
+          isNext={result?.isNext} // The isNext prop is taken from the result object. It's a boolean value that tells us if there are more questions to show.
         />
       </div>
     </>
