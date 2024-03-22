@@ -98,7 +98,8 @@ const Page = async ({ params, searchParams }: any) => {
       </div>
 
       <div className="mt-8 flex flex-wrap gap-2">
-        {result.tags.map((tag) => (
+        {/* eslint-disable-next-line @typescript-eslint/no-explicit-any */}
+        {result.tags.map((tag: any) => (
           <RenderTag
             key={tag._id}
             _id={tag._id}
