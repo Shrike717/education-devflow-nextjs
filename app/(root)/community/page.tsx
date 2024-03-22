@@ -8,18 +8,12 @@ import { SearchParamsProps } from "@/types";
 import Link from "next/link";
 // import Loading from "./loading";
 import type { Metadata } from "next";
-// import { IUser } from "@/database/user.model";
 
 // This is the metadata for the page
 export const metadata: Metadata = {
   title: "Community | DevFlow",
   description: `A community of amazing minds. Join us to ask and answer programming questions.`,
 };
-
-// interface Result {
-//   users: IUser[];
-//   isNext: boolean;
-// }
 
 const Page = async ({
   searchParams,

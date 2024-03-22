@@ -17,9 +17,9 @@ interface Props {
   itemId: string;
   userId: string;
   upvotes: number;
-  hasUpvoted: boolean;
+  hasupVoted: boolean;
   downvotes: number;
-  hasDownvoted: boolean;
+  hasdownVoted: boolean;
   hasSaved?: boolean; // This is optional because we are using this only in the question page
 }
 
