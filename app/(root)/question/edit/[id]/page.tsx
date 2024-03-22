@@ -25,7 +25,7 @@ const Page = async ({ params }: ParamsProps) => {
       <div className="mt-9">
         <Question
           type="edit"
-          mongoUserId={JSON.stringify(mongoUser._id)} // We need to know which user is editing the question:
+          mongoUserId={mongoUser ? JSON.stringify(mongoUser._id) : null} // We need to know which user is editing the question:
           questionDetails={JSON.stringify(result)} // We need all the details of the question to be edited:
         />
       </div>
