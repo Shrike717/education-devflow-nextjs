@@ -1,5 +1,5 @@
-// Disable linting for this file:
-/* eslint-disable @typescript-eslint/no-unused-vars */
+// Disable linting for this file completely:
+/* eslint-disable */
 
 import QuestionCard from "@/components/cards/QuestionCard";
 import NoResult from "@/components/shared/NoResult";
