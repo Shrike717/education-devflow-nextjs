@@ -19,7 +19,8 @@ export const metadata: Metadata = {
   description: `Ask a question and get answers from the community. Share your knowledge and help others.`,
 };
 
-const Page = async ({ params, searchParams }) => {
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+const Page = async ({ params, searchParams }: any) => {
   const result = await getQuestionById({ questionId: params.id });
   // Geting the userId from the clerk. With this we can get the userID from the mongoUser
   const { userId: clerkId } = auth();
