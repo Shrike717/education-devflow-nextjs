@@ -5,14 +5,13 @@ import Metric from "../shared/Metric";
 import { formatBigNumber, getTimestamp } from "@/lib/utils";
 import { SignedIn } from "@clerk/nextjs";
 import EditDeleteAction from "../shared/EditDeleteAction";
-import { ObjectId } from "mongoose";
 
 interface QuestionProps {
   clerkId?: string;
   _id: string;
   title: string;
   tags: {
-    _id: ObjectId;
+    _id: string;
     name: string;
   }[];
   author: {
