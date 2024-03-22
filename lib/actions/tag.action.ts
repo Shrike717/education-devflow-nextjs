@@ -157,7 +157,20 @@ export async function getQuestionsByTagId(params: GetQuestionsByTagIdParams) {
     const isNext = tag.questions.length >= pageSize;
 
     // Here we have to extract the related questions from the tag:
-    const questions = tag.questions;
+    // const questions = tag.questions;
+
+    // Here we have to extract the related questions from the tag:
+    let questions = tag.questions;
+
+    // Transform the tags of each question
+    questions = questions.map((question) => ({
+      ...question.toObject(), // Convert the question document to a plain object
+      tags: question.tags.map((tag) => ({
+        // Transform the tags
+        _id: tag._id.toString(),
+        name: tag.name,
+      })),
+    }));
 
     // Then we reeturn the saved questions:
     return { tagTitle: tag.name, questions, isNext };

@@ -23,6 +23,13 @@ const Page = async ({ params, searchParams }: URLProps) => {
     page: searchParams.page ? +searchParams.page : 1, // The page number is taken from the URL query parameter. +searchParams.page is changing it to a number. If it's not there, the default value is 1.
   });
 
+  //   console.log("[Tags detail page] result.questions: ", result.questions);
+
+  // Log the details of each question
+  //   result.questions.map((question, index) =>
+  //     console.log(`[Tags detail page] Question ${index + 1}:`, question)
+  //   );
+
   // Fake loading variable to simulate loading state
   //   const isLoading = true;
 
