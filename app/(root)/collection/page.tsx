@@ -16,9 +16,7 @@ export const metadata: Metadata = {
   description: `A collection of all your saved questions. You can save questions by clicking the bookmark icon.`,
 };
 
-export default async function Collection({
-  searchParams,
-}: SearchParamsProps): Promise<JSX.Element> {
+export default async function Collection({ searchParams }: SearchParamsProps) {
   //  We define auth as a hook:
   const { userId } = auth();
   // If there is no user, we return null:
