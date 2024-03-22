@@ -51,9 +51,7 @@ export async function getTopInteractedTags(
 }
 
 // GET ALL TAGS:
-export async function getAllTags(
-  params: GetAllTagsParams
-): Promise<{ tags: Tag[] }> {
+export async function getAllTags(params: GetAllTagsParams) {
   try {
     // Connect to the database:
     await connectToDatabase();
