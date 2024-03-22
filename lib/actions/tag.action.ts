@@ -160,14 +160,12 @@ export async function getQuestionsByTagId(params: GetQuestionsByTagIdParams) {
     // const questions = tag.questions;
 
     // Here we have to extract the related questions from the tag:
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    let questions: any = tag.questions;
+    let questions = tag.questions;
 
     // Transform the tags of each question
     questions = questions.map((question) => ({
       ...question.toObject(), // Convert the question document to a plain object
-      // eslint-disable-next-line @typescript-eslint/no-explicit-any
-      tags: question.tags.map((tag: any) => ({
+      tags: question.tags.map((tag) => ({
         // Transform the tags
         _id: tag._id.toString(),
         name: tag.name,
