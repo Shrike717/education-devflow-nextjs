@@ -20,7 +20,7 @@ interface Props {
     name: string;
     picture: string;
   };
-  upvotes: number;
+  upvotes: [];
   createdAt: Date;
 }
 

@@ -15,6 +15,8 @@ const AnswerTab = async ({ searchParams, userId, clerkId }: Props) => {
     page: searchParams.page ? +searchParams.page : 1, // The page number is taken from the URL query parameter. +searchParams.page is changing it to a number. If it's not there, the default value is 1.
   });
 
+  console.log("[AnswerTab] result:", result);
+
   return (
     <>
       {result.answers.map((answer) => (
