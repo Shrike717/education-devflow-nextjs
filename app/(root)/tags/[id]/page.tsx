@@ -1,11 +1,8 @@
-// Disable linting for this file completely:
-/* eslint-disable */
-
 import QuestionCard from "@/components/cards/QuestionCard";
 import NoResult from "@/components/shared/NoResult";
 import Pagination from "@/components/shared/Pagination";
 import LocalSearchbar from "@/components/shared/search/LocalSearchbar";
-import { IQuestion } from "@/database/question.model";
+// import { IQuestion } from "@/database/question.model";
 import { getQuestionsByTagId } from "@/lib/actions/tag.action";
 import { URLProps } from "@/types";
 import React from "react";
@@ -55,7 +52,8 @@ const Page = async ({ params, searchParams }: URLProps) => {
 
       <div className="mt-10 flex w-full flex-col gap-6">
         {result.questions.length > 0 ? (
-          result.questions.map((question: IQuestion) => (
+          // eslint-disable-next-line @typescript-eslint/no-explicit-any
+          result.questions.map((question: any) => (
             <QuestionCard // Reusable Component QuestionCard
               key={question._id}
               _id={question._id}
