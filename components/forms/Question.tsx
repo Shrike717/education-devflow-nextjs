@@ -57,7 +57,8 @@ const Question = ({ type, mongoUserId, questionDetails }: Props) => {
     questionDetails && JSON.parse(questionDetails || "");
 
   // Here we extract the tags from the questionDetails to then show them below the tags input field
-  const groupedTags = parsedQuestionDetails?.tags.map((tag) => tag.name);
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  const groupedTags = parsedQuestionDetails?.tags.map((tag: any) => tag.name);
 
   // Zod 1. Define your form.
   const form = useForm<z.infer<typeof QuestionsSchema>>({
