@@ -12,7 +12,8 @@ import * as z from "zod";
 import { AnswersSchema } from "@/lib/validations";
 import { zodResolver } from "@hookform/resolvers/zod";
 // Imports for Editor:
-import { Editor as TinyMCEEditor } from "@tinymce/tinymce-react";
+// import { Editor as TinyMCEEditor } from "@tinymce/tinymce-react";
+import { Editor } from "@tinymce/tinymce-react";
 import { useRef, useState } from "react";
 import { useTheme } from "@/context/ThemeProvider";
 import { Button } from "../ui/button";
@@ -39,7 +40,8 @@ const Answer = ({ question, questionId, authorId }: Props) => {
   const [isSubmittingAI, setIsSubmittingAI] = useState(false);
 
   // Here we initialize the hook for the editor
-  const editorRef = useRef<Editor | null>(null); // With this we can access the editor values
+  //   const editorRef = useRef<Editor | null>(null); // With this we can access the editor values
+  const editorRef = useRef(null); // With this we can access the editor values
 
   // Zod 1. Define your form.
   const form = useForm<z.infer<typeof AnswersSchema>>({
@@ -161,7 +163,7 @@ const Answer = ({ question, questionId, authorId }: Props) => {
               <FormItem className="flex w-full flex-col gap-3">
                 <FormControl className="mt-3.5">
                   {/* Editor component */}
-                  <TinyMCEEditor
+                  <Editor
                     apiKey={process.env.NEXT_PUBLIC_TINY_EDITOR_API_KEY}
                     onInit={(evt, editor) => (editorRef.current = editor)}
                     // Witth the following two lines we can access the values of the editor
