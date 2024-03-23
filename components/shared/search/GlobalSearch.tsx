@@ -13,7 +13,7 @@ const GlobalSearch = () => {
   const pathname = usePathname();
   const searchParams = useSearchParams();
   //   const searchContainerRef = useRef(null); // We need a ref to the search container to check if the user clicks outside of it
-  const searchContainerRef = useRef<HTMLElement>(null); // We need a ref to the search container to check if the user clicks outside of it
+  const searchContainerRef = useRef<HTMLDivElement>(null); // We need a ref to the search container to check if the user clicks outside of it
   const query = searchParams.get("q"); // When we have the searchParams, we can access the local query:
 
   const [search, setSearch] = useState(query || ""); // Then we set a local state for the query. Every key stroke will update the state
