@@ -164,7 +164,8 @@ export async function getQuestionsByTagId(params: GetQuestionsByTagIdParams) {
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     questions = questions.map((question: any) => ({
       ...question.toObject(), // Convert the question document to a plain object
-      tags: question.tags.map((tag) => ({
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      tags: question.tags.map((tag: any) => ({
         // Transform the tags
         _id: tag._id.toString(),
         name: tag.name,
