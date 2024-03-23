@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 "use client";
 
 import React, { useRef, useState } from "react";
@@ -17,8 +18,9 @@ import {
 import { Input } from "@/components/ui/input";
 import { QuestionsSchema } from "@/lib/validations";
 // Imports for Editor:
-import { Editor as TinyMCEEditor } from "@tinymce/tinymce-react";
-import { Editor } from "tinymce";
+import { Editor } from "@tinymce/tinymce-react";
+// import { Editor as TinyMCEEditor } from "@tinymce/tinymce-react";
+// import { Editor } from "tinymce";
 import { Badge } from "../ui/badge";
 import Image from "next/image";
 import { createQuestion, editQuestion } from "@/lib/actions/question.action";
@@ -47,7 +49,7 @@ const Question = ({ type, mongoUserId, questionDetails }: Props) => {
   const pathname = usePathname(); // Wee use this to know on which url we are right now
 
   // Here we initialize the hook for the editor
-  const editorRef = useRef<Editor | null>(null); // With this we can access the editor values
+  const editorRef = useRef<any>(null); // With this we can access the editor values
 
   // Here we parse the questionDetails from JSON to prepopulate the form
   const parsedQuestionDetails =
@@ -198,7 +200,7 @@ const Question = ({ type, mongoUserId, questionDetails }: Props) => {
               </FormLabel>
               <FormControl className="mt-3.5">
                 {/* Editor component */}
-                <TinyMCEEditor
+                <Editor
                   apiKey={process.env.NEXT_PUBLIC_TINY_EDITOR_API_KEY}
                   onInit={(evt, editor) => (editorRef.current = editor)}
                   initialValue={parsedQuestionDetails?.content || ""} // Here we prepopulate the editor with the content of the question
