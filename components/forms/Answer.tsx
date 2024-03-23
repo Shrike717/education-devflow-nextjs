@@ -13,7 +13,10 @@ import { AnswersSchema } from "@/lib/validations";
 import { zodResolver } from "@hookform/resolvers/zod";
 // Imports for Editor:
 // import { Editor as TinyMCEEditor } from "@tinymce/tinymce-react";
-import { Editor as TinyMCEEditor } from "@tinymce/tinymce-react";
+
+import { Editor as TinyMCEEditor } from "tinymce";
+import { Editor } from "@tinymce/tinymce-react";
+
 import { useRef, useState } from "react";
 import { useTheme } from "@/context/ThemeProvider";
 import { Button } from "../ui/button";
@@ -162,7 +165,7 @@ const Answer = ({ question, questionId, authorId }: Props) => {
               <FormItem className="flex w-full flex-col gap-3">
                 <FormControl className="mt-3.5">
                   {/* Editor component */}
-                  <TinyMCEEditor
+                  <Editor
                     apiKey={process.env.NEXT_PUBLIC_TINY_EDITOR_API_KEY}
                     onInit={(evt, editor) => (editorRef.current = editor)}
                     // Witth the following two lines we can access the values of the editor
