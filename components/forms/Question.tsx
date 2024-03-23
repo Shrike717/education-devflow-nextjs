@@ -97,7 +97,8 @@ const Question = ({ type, mongoUserId, questionDetails }: Props) => {
           title: values.title,
           content: values.explanation,
           tags: values.tags,
-          author: JSON.parse(mongoUserId),
+          //   author: JSON.parse(mongoUserId),
+          author: mongoUserId ? JSON.parse(mongoUserId) : null,
           path: pathname,
         });
         // Redirect to Homepage after the question was created
