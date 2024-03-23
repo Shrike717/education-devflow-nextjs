@@ -41,7 +41,7 @@ const Answer = ({ question, questionId, authorId }: Props) => {
 
   // Here we initialize the hook for the editor
   //   const editorRef = useRef<Editor | null>(null); // With this we can access the editor values
-  const editorRef = useRef(null); // With this we can access the editor values
+  const editorRef = useRef<Editor | null>(null); // With this we can access the editor values
 
   // Zod 1. Define your form.
   const form = useForm<z.infer<typeof AnswersSchema>>({
