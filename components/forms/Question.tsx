@@ -49,6 +49,7 @@ const Question = ({ type, mongoUserId, questionDetails }: Props) => {
   const pathname = usePathname(); // Wee use this to know on which url we are right now
 
   // Here we initialize the hook for the editor
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const editorRef = useRef<any>(null); // With this we can access the editor values
 
   // Here we parse the questionDetails from JSON to prepopulate the form
