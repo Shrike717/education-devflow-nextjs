@@ -42,7 +42,11 @@ const UserCard = async ({ user }: Props): Promise<JSX.Element> => {
           {interactedTags.length > 0 ? (
             <div className="flex items-center gap-2">
               {interactedTags.map((tag) => (
-                <RenderTag key={tag._id} _id={tag._id} name={tag.name} />
+                <RenderTag
+                  key={tag._id}
+                  _id={tag._id}
+                  name={tag.name.substring(0, 4) + ".."}
+                />
               ))}
             </div>
           ) : (
