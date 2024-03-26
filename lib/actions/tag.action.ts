@@ -10,6 +10,7 @@ import {
 import Tag, { ITag } from "@/database/tag.model";
 import Question from "@/database/question.model";
 import { FilterQuery } from "mongoose";
+import Interaction from "@/database/interaction.model";
 
 interface Tag {
   _id: string;
@@ -39,11 +40,36 @@ export async function getTopInteractedTags(
     // Later on we create a new entity caalled Interactions. Then we are able too  do all sorts of manipulaions on that model.
 
     // For now we return a static array of tags:
-    return [
-      { _id: "1", name: "tag1" },
-      { _id: "2", name: "tag2" },
-      { _id: "3", name: "tag3" },
-    ];
+    // return [
+    //   { _id: "1", name: "tag1" },
+    //   { _id: "2", name: "tag2" },
+    //   { _id: "3", name: "tag3" },
+    // ];
+
+    // Find the tags that the user has interacted with:
+    const interactedTags = await Interaction.aggregate([
+      { $match: { user: userId } },
+      { $unwind: "$tags" },
+      { $group: { _id: "$tags", count: { $sum: 1 } } },
+      { $sort: { count: -1 } },
+      { $limit: limit },
+      {
+        $lookup: {
+          from: "tags",
+          localField: "_id",
+          foreignField: "_id",
+          as: "tagInfo",
+        },
+      },
+      { $unwind: "$tagInfo" },
+      {
+        $replaceRoot: {
+          newRoot: { $mergeObjects: [{ count: "$count" }, "$tagInfo"] },
+        },
+      },
+    ]);
+
+    return interactedTags;
   } catch (error) {
     console.log(error);
     throw error;
