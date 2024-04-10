@@ -93,7 +93,6 @@ const Answer = ({ question, questionId, authorId }: Props) => {
     // If there is one we set the loader state to true:
     setIsSubmittingAI(true);
 
-    //
     try {
       // Here we make a call to our own API endpoint to generate an AI answer
       const response = await fetch(
@@ -135,6 +134,7 @@ const Answer = ({ question, questionId, authorId }: Props) => {
         <Button
           className="btn light-border-2 gap-1.5 rounded-md px-4 py-2.5 text-primary-500 shadow-none dark:text-primary-500"
           onClick={generateAIAnswer}
+          disabled // I disabled the button, so that the user can't press it.
         >
           {isSubmittingAI ? (
             <>Generating...</>
