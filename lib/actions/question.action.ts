@@ -214,7 +214,7 @@ export async function deleteQuestion(params: DeleteQuestionParams) {
     // Then we have to delete all interactions that belong to the question:
     await Interaction.deleteMany({ question: questionId });
 
-    // Then we want to update thhe tags to n longer include references to the deleted question:
+    // Then we want to update the tags to no longer include references to the deleted question:
     await Tag.updateMany(
       { questions: questionId }, // Which question
       { $pull: { questions: questionId } } // Remove the question from the questions array

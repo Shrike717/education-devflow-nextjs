@@ -37,7 +37,7 @@ const QuestionCard = ({
   answers,
   createdAt,
 }: QuestionProps) => {
-  // We check if the user is signed in and if the user is the author of the question
+  // We check if the user is signed in and if the user is the author of the question. If so, we show the edit and delete button in the Profile page.
   const showActionButtons = clerkId && clerkId === author.clerkId;
 
   return (

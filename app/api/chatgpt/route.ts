@@ -1,6 +1,6 @@
 import { NextResponse } from "next/server";
 
-//
+// This is the route handler for the POST request to /api/chatgpt
 export const POST = async (request: Request) => {
   // First we get the question from the request body
   const { question } = await request.json();
