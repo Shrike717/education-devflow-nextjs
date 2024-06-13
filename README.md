@@ -1,4 +1,4 @@
-### NextJS Education App - DevFlow
+### DevFlow - NextJS Education App
 
 #### Description
 DevFlow is an educational web application built on Next.js, utilizing modern technologies such as TypeScript, Tailwind CSS, ShadCn, Clerk, Mongoose, and MongoDB. It provides a platform for developers to learn and interact with each other.
