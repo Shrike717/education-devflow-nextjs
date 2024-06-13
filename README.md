@@ -1,36 +1,27 @@
-This is a [Next.js](https://nextjs.org/) project bootstrapped with [`create-next-app`](https://github.com/vercel/next.js/tree/canary/packages/create-next-app).
+### NextJS Education App - DevFlow
 
-## Getting Started
+#### Description
+DevFlow is an educational web application built on Next.js, utilizing modern technologies such as TypeScript, Tailwind CSS, ShadCn, Clerk, Mongoose, and MongoDB. It provides a platform for developers to learn and interact with each other.
 
-First, run the development server:
+#### Technologies
 
-```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
-```
+##### Frontend
+- **Next.js**: A React framework for server-side rendering of React applications.
+- **TypeScript**: A typed extension of JavaScript for enhanced code safety and clarity.
+- **Tailwind CSS**: A utility-first CSS framework for creating custom designs.
+- **ShadCn**: Shadcn is a tool to help you build your component library.
+- **Clerk**: An authentication platform for managing user logins and roles.
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+##### Backend
+- **Mongoose**: An ODM library for MongoDB and Node.js, simplifying data modeling.
+- **MongoDB**: A NoSQL database for scalable and flexible applications.
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+#### Features
+- **Authentication**: Custom and OAuth authentication with Google or Github via Clerk.
+- **Recommendation System**: Analyzes user interactions to highlight popular posts or resources.
+- **Reputation System**: Rewards and measures user activity on the platform.
+- **AI-generated Answers**: Generates responses based on AI algorithms, serving as a basis for answering questions.
 
-This project uses [`next/font`](https://nextjs.org/docs/basic-features/font-optimization) to automatically optimize and load Inter, a custom Google Font.
-
-## Learn More
-
-To learn more about Next.js, take a look at the following resources:
-
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
-
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js/) - your feedback and contributions are welcome!
-
-## Deploy on Vercel
-
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
-
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/deployment) for more details.
+#### Tutorial
+The project was created using the "Ultimate Next.js Course" by JS Mastery.
+Course: https://www.jsmastery.pro/ultimate-next-course
