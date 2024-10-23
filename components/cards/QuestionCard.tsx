@@ -75,11 +75,11 @@ const QuestionCard = ({
 
       <div className="flex-between mt-6 w-full flex-wrap gap-3">
         <Metric // Reusable Component für die kleinen Icons und Texte unten
-          imgUrl={author.picture}
+          imgUrl={author?.picture}
           alt="user"
-          value={author.name}
+          value={author?.name}
           title={` - asked ${getTimestamp(createdAt)}`}
-          href={`/profile/${author._id}`}
+          href={author?._id ? `/profile/${author._id}` : '#'}
           isAuthor
           textStyles="body-medium text-dark400_light700"
         />
